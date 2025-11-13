@@ -1,6 +1,6 @@
-package domain;
+package com.matheusmarques.neopdv.domain;
 
-import domain.enumerated.Role;
+import com.matheusmarques.neopdv.domain.enumerated.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

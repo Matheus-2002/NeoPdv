@@ -1,4 +1,4 @@
-package domain;
+package com.matheusmarques.neopdv.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
