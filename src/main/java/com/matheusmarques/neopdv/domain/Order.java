@@ -2,25 +2,29 @@ package com.matheusmarques.neopdv.domain;
 
 import com.matheusmarques.neopdv.domain.enumerated.PaymentMethod;
 import com.matheusmarques.neopdv.domain.enumerated.StatusOrder;
-import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+import jakarta.validation.constraints.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Table(name = "tb_order")
+@Document(collection = "tb_orders")
 public class Order {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @MongoId
+    private String id;
     private String owner;
+    @Min(value = 1, message = "Table number must be greater than 0")
     private int tableNumber;
+    @NotNull
+    @PositiveOrZero
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
+    @NotBlank
     private StatusOrder status;
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
     public Order() {
@@ -34,11 +38,11 @@ public class Order {
         this.tableNumber = tableNumber;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

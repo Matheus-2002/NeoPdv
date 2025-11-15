@@ -1,33 +1,30 @@
 package com.matheusmarques.neopdv.domain;
 
 import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "tb_orderItem")
+@Document(collection = "tb_orderItem")
 public class OrderItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @MongoId
+    private String id;
     private BigDecimal productPrice;
     private String productName;
     private int quantity;
-    @ManyToOne
-    @JoinColumn(name = "order_id")
     private Order order;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
     private Product product;
 
     public OrderItem() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

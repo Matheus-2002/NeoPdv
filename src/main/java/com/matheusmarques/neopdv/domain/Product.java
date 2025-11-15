@@ -1,15 +1,14 @@
 package com.matheusmarques.neopdv.domain;
 
 import com.matheusmarques.neopdv.domain.enumerated.Role;
-import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
-@Entity
-@Table(name = "tb_product")
+@Document(collection = "tb_products")
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @MongoId
+    private String id;
     private String name;
     private String email;
     private String password;
@@ -20,11 +19,11 @@ public class Product {
     public Product() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

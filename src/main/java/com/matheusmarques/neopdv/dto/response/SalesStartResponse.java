@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 public record SalesStartResponse(
         Boolean success,
         String message,
-        Long orderId,
+        String orderId,
         StatusTable statusTable,
-        LocalDateTime timesTamp
+        LocalDateTime timestamp
 ) {
 }

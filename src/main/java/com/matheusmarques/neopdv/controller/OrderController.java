@@ -1,22 +1,27 @@
 package com.matheusmarques.neopdv.controller;
 
-import com.matheusmarques.neopdv.domain.enumerated.StatusTable;
 import com.matheusmarques.neopdv.dto.request.SalesStartRequest;
 import com.matheusmarques.neopdv.dto.response.SalesStartResponse;
+import com.matheusmarques.neopdv.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
 
+    private OrderService service;
+
+    public OrderController(OrderService service){
+        this.service = service;
+    }
+
     @PostMapping("/start")
-    private ResponseEntity<SalesStartResponse> startOrder (@RequestBody SalesStartRequest dto){
+    private ResponseEntity<SalesStartResponse> startOrder (@RequestBody SalesStartRequest request){
+
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new SalesStartResponse(true, "teste", 1234l, StatusTable.FREE, LocalDateTime.now()));
+                .status(HttpStatus.CREATED)
+                .body(service.orderStart(request));
     }
 }
