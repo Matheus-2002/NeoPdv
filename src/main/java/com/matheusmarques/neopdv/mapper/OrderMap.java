@@ -15,7 +15,7 @@ public class OrderMap {
         order.setAmount(new BigDecimal(0));
         order.setStatus(StatusOrder.OPEN);
         order.setCreatedDate(LocalDateTime.now());
-        order.setItems(new ArrayList<>());
+        order.setItemsId(new ArrayList<>());
         return order;
     }
 }

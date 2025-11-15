@@ -1,6 +1,5 @@
 package com.matheusmarques.neopdv.domain;
 
-import jakarta.persistence.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -14,8 +13,8 @@ public class OrderItem {
     private BigDecimal productPrice;
     private String productName;
     private int quantity;
-    private Order order;
-    private Product product;
+    private String orderId;
+    private String productId;
 
     public OrderItem() {
     }
@@ -52,19 +51,19 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public Order getOrder() {
-        return order;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

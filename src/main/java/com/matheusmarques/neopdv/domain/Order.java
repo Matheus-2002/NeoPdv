@@ -25,7 +25,7 @@ public class Order {
     @NotBlank
     private StatusOrder status;
     private LocalDateTime createdDate;
-    private List<OrderItem> items;
+    private List<String> itemsId;
 
     public Order() {
     }
@@ -86,11 +86,11 @@ public class Order {
         this.createdDate = createdDate;
     }
 
-    public List<OrderItem> getItems() {
-        return items;
+    public List<String> getItemsId() {
+        return itemsId;
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
+    public void setItemsId(List<String> itemsId) {
+        this.itemsId = itemsId;
     }
 }
