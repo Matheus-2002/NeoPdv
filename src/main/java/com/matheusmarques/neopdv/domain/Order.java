@@ -15,6 +15,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String owner;
+    private int tabNumber;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
     private StatusOrder status;
@@ -23,6 +24,14 @@ public class Order {
     private List<OrderItem> items;
 
     public Order() {
+    }
+
+    public int getTabNumber() {
+        return tabNumber;
+    }
+
+    public void setTabNumber(int tabNumber) {
+        this.tabNumber = tabNumber;
     }
 
     public Long getId() {
