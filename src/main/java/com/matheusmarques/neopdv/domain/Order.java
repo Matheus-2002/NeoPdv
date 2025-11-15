@@ -15,7 +15,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String owner;
-    private int tabNumber;
+    private int tableNumber;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
     private StatusOrder status;
@@ -26,12 +26,12 @@ public class Order {
     public Order() {
     }
 
-    public int getTabNumber() {
-        return tabNumber;
+    public int getTableNumber() {
+        return tableNumber;
     }
 
-    public void setTabNumber(int tabNumber) {
-        this.tabNumber = tabNumber;
+    public void setTableNumber(int tableNumber) {
+        this.tableNumber = tableNumber;
     }
 
     public Long getId() {
