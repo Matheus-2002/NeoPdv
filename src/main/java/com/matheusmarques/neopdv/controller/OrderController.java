@@ -19,9 +19,14 @@ public class OrderController {
 
     @PostMapping("/start")
     private ResponseEntity<SalesStartResponse> startOrder (@RequestBody SalesStartRequest request){
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(service.orderStart(request));
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(service.orderStart(request));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
