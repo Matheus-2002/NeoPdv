@@ -15,8 +15,17 @@ public class OrderItem {
     private int quantity;
     private String orderId;
     private String productId;
+    private BigDecimal amount;
 
     public OrderItem() {
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getId() {

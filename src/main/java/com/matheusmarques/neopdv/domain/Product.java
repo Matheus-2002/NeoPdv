@@ -1,8 +1,9 @@
 package com.matheusmarques.neopdv.domain;
 
-import com.matheusmarques.neopdv.domain.enumerated.Role;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.math.BigDecimal;
 
 @Document(collection = "tb_products")
 public class Product {
@@ -10,11 +11,9 @@ public class Product {
     @MongoId
     private String id;
     private String name;
-    private String email;
-    private String password;
-    private String document;
-    private String username;
-    private Role role;
+    private BigDecimal value;
+    private int stock;
+    private String codebar;
 
     public Product() {
     }
@@ -35,43 +34,27 @@ public class Product {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public BigDecimal getValue() {
+        return value;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setValue(BigDecimal value) {
+        this.value = value;
     }
 
-    public String getPassword() {
-        return password;
+    public int getStock() {
+        return stock;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
-    public String getDocument() {
-        return document;
+    public String getCodebar() {
+        return codebar;
     }
 
-    public void setDocument(String document) {
-        this.document = document;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void setCodebar(String codebar) {
+        this.codebar = codebar;
     }
 }
