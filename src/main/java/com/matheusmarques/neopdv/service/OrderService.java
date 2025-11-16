@@ -64,10 +64,11 @@ public class OrderService {
             throw new ItemNotFoundException("ID do item não encontrado na lista: " + itemId);
         }
 
+        OrderItem itemDelete = orderItemRepository.findById(itemId).orElseThrow();
+        order.setAmount(order.getAmount().subtract(itemDelete.getAmount()));
         orderItemRepository.deleteById(itemId);
-        List<OrderItem> itemList = orderItemRepository.findAllById(order.getItemsId());
 
-        return OrderMap.toOrderResponse(repository.save(order), itemList);
+        return OrderMap.toOrderResponse(repository.save(order), orderItemRepository.findAllById(order.getItemsId()));
     }
 
     public OrderItemResponse addItem(OrderItemRequest request, String orderId){
