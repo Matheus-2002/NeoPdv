@@ -21,6 +21,7 @@ public class ProductController {
 
     @PutMapping("/update/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable String productId, @RequestBody ProductRequest request){
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.updateProduct(productId, request))
