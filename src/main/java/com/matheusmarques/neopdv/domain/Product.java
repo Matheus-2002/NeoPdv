@@ -1,5 +1,6 @@
 package com.matheusmarques.neopdv.domain;
 
+import com.matheusmarques.neopdv.annotation.AuditableField;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -11,6 +12,7 @@ public class Product {
     @MongoId
     private String id;
     private String name;
+    @AuditableField
     private BigDecimal value;
     private int stock;
     private String codebar;
