@@ -1,8 +1,8 @@
 package com.matheusmarques.neopdv.repository;
 
 
-import com.matheusmarques.neopdv.domain.Order;
-import com.matheusmarques.neopdv.domain.enumerated.StatusOrder;
+import com.matheusmarques.neopdv.domain.order.Order;
+import com.matheusmarques.neopdv.domain.enums.StatusOrder;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 

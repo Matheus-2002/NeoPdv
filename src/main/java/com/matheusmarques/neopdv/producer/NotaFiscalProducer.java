@@ -1,6 +1,6 @@
 package com.matheusmarques.neopdv.producer;
 
-import com.matheusmarques.neopdv.dto.request.NotaFiscalRequest;
+import com.matheusmarques.neopdv.api.kafka.request.NotaFiscalRequest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 

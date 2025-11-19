@@ -1,6 +1,6 @@
 package com.matheusmarques.neopdv.repository;
 
-import com.matheusmarques.neopdv.domain.Product;
+import com.matheusmarques.neopdv.domain.product.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

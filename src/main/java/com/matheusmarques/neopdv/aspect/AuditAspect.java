@@ -1,5 +1,5 @@
 package com.matheusmarques.neopdv.aspect;
-import com.matheusmarques.neopdv.service.AuditAsyncService;
+import com.matheusmarques.neopdv.service.audit.AuditAsyncService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

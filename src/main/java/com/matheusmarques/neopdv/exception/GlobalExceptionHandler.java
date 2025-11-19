@@ -1,8 +1,8 @@
 package com.matheusmarques.neopdv.exception;
 
-import com.matheusmarques.neopdv.domain.enumerated.StatusTable;
-import com.matheusmarques.neopdv.dto.response.ExceptionResponse;
-import com.matheusmarques.neopdv.dto.response.SalesStartResponse;
+import com.matheusmarques.neopdv.domain.enums.StatusTable;
+import com.matheusmarques.neopdv.exception.response.ExceptionResponse;
+import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
 import com.matheusmarques.neopdv.exception.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

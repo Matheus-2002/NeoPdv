@@ -1,9 +1,9 @@
 package com.matheusmarques.neopdv.build;
 
-import com.matheusmarques.neopdv.domain.Order;
-import com.matheusmarques.neopdv.domain.OrderItem;
-import com.matheusmarques.neopdv.domain.Product;
-import com.matheusmarques.neopdv.dto.request.OrderItemRequest;
+import com.matheusmarques.neopdv.domain.order.Order;
+import com.matheusmarques.neopdv.domain.order.OrderItem;
+import com.matheusmarques.neopdv.domain.product.Product;
+import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
 
 import java.math.BigDecimal;
 
