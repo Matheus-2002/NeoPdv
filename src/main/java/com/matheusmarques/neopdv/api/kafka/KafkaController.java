@@ -1,21 +1,21 @@
 package com.matheusmarques.neopdv.api.kafka;
 
-import com.matheusmarques.neopdv.api.kafka.request.NotaFiscalRequest;
-import com.matheusmarques.neopdv.producer.NotaFiscalProducer;
+import com.matheusmarques.neopdv.api.kafka.request.InvoiceRequest;
+import com.matheusmarques.neopdv.producer.InvoiceProducer;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/kafka")
 public class KafkaController {
 
-    private final NotaFiscalProducer producer;
+    private final InvoiceProducer producer;
 
-    public KafkaController(NotaFiscalProducer producer) {
+    public KafkaController(InvoiceProducer producer) {
         this.producer = producer;
     }
 
     @PostMapping("/send")
-    public String enviar(@RequestBody NotaFiscalRequest request) {
+    public String enviar(@RequestBody InvoiceRequest request) {
         producer.enviarMensagem(request);
         return "Enviado: " + request;
     }

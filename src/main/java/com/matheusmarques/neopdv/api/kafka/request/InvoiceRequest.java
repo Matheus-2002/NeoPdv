@@ -1,6 +1,6 @@
 package com.matheusmarques.neopdv.api.kafka.request;
 
-public record NotaFiscalRequest(
+public record InvoiceRequest(
         String numero,
         String cliente,
         Double valor,
