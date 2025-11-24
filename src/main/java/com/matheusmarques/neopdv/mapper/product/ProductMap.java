@@ -1,5 +1,6 @@
 package com.matheusmarques.neopdv.mapper.product;
 
+import com.matheusmarques.neopdv.api.product.response.ProductResponse;
 import com.matheusmarques.neopdv.domain.product.Product;
 import com.matheusmarques.neopdv.api.product.request.ProductRequest;
 
@@ -14,4 +15,15 @@ public class ProductMap {
 
         return product;
     }
+
+    public static ProductResponse toResponse(Product product){
+
+        return new ProductResponse(
+                true,
+                "Produto Criado com Sucesso",
+                product
+        );
+    }
+
+
 }

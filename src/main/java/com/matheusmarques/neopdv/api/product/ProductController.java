@@ -16,8 +16,14 @@ public class ProductController {
         this.service = service;
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request){
 
-
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(service.createProduct(request))
+                ;
+    }
 
     @PutMapping("/update/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable String productId, @RequestBody ProductRequest request){
