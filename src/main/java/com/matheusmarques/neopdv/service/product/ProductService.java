@@ -28,11 +28,7 @@ public class ProductService {
 
         Product updateProduct = repository.save(newProduct);
 
-        return new ProductResponse(
-                true,
-                "Produto Atualizado com Sucesso",
-                updateProduct
-        );
+        return ProductMap.toResponse(updateProduct, "Produto Atualizado com Sucesso");
     }
 
     public ProductResponse createProduct(ProductRequest request){
@@ -56,5 +52,23 @@ public class ProductService {
         return ProductMap.toResponse(product, "Valor atualizado");
     }
 
+    public ProductResponse updateStock(String productId, int stock){
+        Product product = repository.findById(productId)
+                .orElseThrow(() -> new ValidateProduct("O id do produto não existe no banco de dados"));
 
+        product.setStock(stock);
+        repository.save(product);
+
+        return ProductMap.toResponse(product, "Estoque atualizado");
+    }
+
+    public ProductResponse updateName(String productId, String name){
+        Product product = repository.findById(productId)
+                .orElseThrow(() -> new ValidateProduct("O id do produto não existe no banco de dados"));
+
+        product.setName(name);
+        repository.save(product);
+
+        return ProductMap.toResponse(product, "Nome atualizado");
+    }
 }
