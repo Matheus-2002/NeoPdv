@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -31,6 +33,15 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.updateProduct(productId, request))
+                ;
+    }
+
+    @PatchMapping("/update-value/{productId}")
+    public ResponseEntity<ProductResponse> updateValue(@PathVariable String productId, @RequestBody BigDecimal value){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.updateValue(productId, value))
                 ;
     }
 }

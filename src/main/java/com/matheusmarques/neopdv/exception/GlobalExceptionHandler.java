@@ -4,7 +4,6 @@ import com.matheusmarques.neopdv.domain.enums.StatusTable;
 import com.matheusmarques.neopdv.exception.response.ExceptionResponse;
 import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
 import com.matheusmarques.neopdv.exception.custom.*;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -75,7 +74,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ValidateCodebarException.class)
-    public ResponseEntity<ExceptionResponse> handleFindCodebar(ValidateCodebarException ex){
+    public ResponseEntity<ExceptionResponse> handleProductFindCodebar(ValidateCodebarException ex){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ExceptionResponse(
+                        false,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
+    @ExceptionHandler(ValidateProduct.class)
+    public ResponseEntity<ExceptionResponse> handleProductFindId(ValidateProduct ex){
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionResponse(

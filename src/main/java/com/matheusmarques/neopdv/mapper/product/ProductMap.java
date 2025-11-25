@@ -16,11 +16,11 @@ public class ProductMap {
         return product;
     }
 
-    public static ProductResponse toResponse(Product product){
+    public static ProductResponse toResponse(Product product, String message){
 
         return new ProductResponse(
                 true,
-                "Produto Criado com Sucesso",
+                message,
                 product
         );
     }
