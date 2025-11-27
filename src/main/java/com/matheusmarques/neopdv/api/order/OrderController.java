@@ -28,7 +28,7 @@ public class OrderController {
                 .body(service.orderStart(request));
     }
 
-    @PostMapping("/{orderId}/product")
+    @PostMapping("/add-item/{orderId}")
     public ResponseEntity<OrderItemResponse> addItem(@PathVariable String orderId, @RequestBody OrderItemRequest request){
 
         return ResponseEntity
@@ -36,7 +36,7 @@ public class OrderController {
                 .body(service.addItem(request, orderId));
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/enter/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable String orderId){
         return ResponseEntity
                 .status(HttpStatus.OK)
