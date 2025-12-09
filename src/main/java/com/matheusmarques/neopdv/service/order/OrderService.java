@@ -33,6 +33,11 @@ public class OrderService {
         this.orderItemRepository = orderItemRepository;
     }
 
+    public List<Order> getAll(){
+        List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
+
+        return orders;
+    }
 
     public SalesStartResponse orderStart(SalesStartRequest request){
         Order orderRequest = OrderMap.map(request);

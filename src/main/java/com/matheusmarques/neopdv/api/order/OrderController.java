@@ -6,10 +6,14 @@ import com.matheusmarques.neopdv.api.order.request.SalesStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
 import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
+import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.service.order.OrderService;
+import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -48,5 +52,12 @@ public class OrderController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.removeItem(orderId, itemId));
+    }
+
+    @GetMapping("/all-open")
+    public ResponseEntity<List<Order>> getAll(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getAll());
     }
 }
