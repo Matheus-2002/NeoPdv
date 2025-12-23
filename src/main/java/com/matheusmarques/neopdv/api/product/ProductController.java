@@ -2,6 +2,7 @@ package com.matheusmarques.neopdv.api.product;
 
 import com.matheusmarques.neopdv.api.product.request.ProductRequest;
 import com.matheusmarques.neopdv.api.product.response.ProductResponse;
+import com.matheusmarques.neopdv.domain.product.Product;
 import com.matheusmarques.neopdv.service.product.ProductService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
@@ -20,6 +22,14 @@ public class ProductController {
     public ProductController(ProductService service){
         this.service = service;
     }
+
+    @GetMapping("/all-active")
+    public ResponseEntity<List<Product>> getAll(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getAll());
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request){

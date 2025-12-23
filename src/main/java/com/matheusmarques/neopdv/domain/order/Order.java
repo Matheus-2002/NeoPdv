@@ -26,8 +26,17 @@ public class Order {
     private StatusOrder status;
     private LocalDateTime createdDate;
     private List<String> itemsId;
+    private String customer;
 
     public Order() {
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
     }
 
     public int getTableNumber() {

@@ -1,5 +1,6 @@
 package com.matheusmarques.neopdv.service.order;
 
+import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
 import com.matheusmarques.neopdv.build.OrderItemBuilder;
 import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.domain.order.OrderItem;
@@ -18,6 +19,7 @@ import com.matheusmarques.neopdv.repository.OrderRepository;
 import com.matheusmarques.neopdv.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,6 +33,15 @@ public class OrderService {
         this.repository = repository;
         this.productRepository = productRepository;
         this.orderItemRepository = orderItemRepository;
+    }
+
+    public List<OrderCardResponse> getCardOrders(){
+        List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
+        List<OrderCardResponse> cardOrders = new ArrayList<>();
+
+        if (orders.isEmpty()){return cardOrders;}
+
+        return OrderMap.toOrderCardResponse(orders);
     }
 
     public List<Order> getAll(){
