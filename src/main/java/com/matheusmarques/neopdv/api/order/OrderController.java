@@ -1,17 +1,14 @@
 package com.matheusmarques.neopdv.api.order;
 
-import com.matheusmarques.neopdv.api.order.request.DeleteItemRequest;
+import com.matheusmarques.neopdv.api.order.request.OrderItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
-import com.matheusmarques.neopdv.api.order.request.SalesStartRequest;
+import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
-import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
-import com.matheusmarques.neopdv.domain.order.Order;
-import com.matheusmarques.neopdv.service.order.OrderService;
+import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +25,7 @@ public class OrderController {
         this.service = service;
     }
 
-    @GetMapping("/all-orders/card")
+    @GetMapping("/all-active/cards")
     public ResponseEntity<List<OrderCardResponse>> getCardOrders(){
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -36,7 +33,7 @@ public class OrderController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<SalesStartResponse> startOrder (@RequestBody @Valid SalesStartRequest request){
+    public ResponseEntity<OrderStartResponse> startOrder (@RequestBody @Valid OrderStartRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.orderStart(request));
@@ -50,15 +47,15 @@ public class OrderController {
                 .body(service.addItem(request, orderId));
     }
 
-    @GetMapping("/enter/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable String orderId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getOrderById(orderId));
     }
 
-    @DeleteMapping("/deleteItem/{orderId}")
-    public ResponseEntity<OrderResponse> removeItem(@PathVariable String orderId, @RequestBody DeleteItemRequest itemId){
+    @DeleteMapping("/delete-item/{orderId}")
+    public ResponseEntity<OrderResponse> removeItem(@PathVariable String orderId, @RequestBody OrderItemDeleteRequest itemId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.removeItem(orderId, itemId));

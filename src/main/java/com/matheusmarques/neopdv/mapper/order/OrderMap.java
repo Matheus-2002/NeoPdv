@@ -5,9 +5,9 @@ import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.domain.order.OrderItem;
 import com.matheusmarques.neopdv.domain.enums.StatusOrder;
 import com.matheusmarques.neopdv.domain.enums.StatusTable;
-import com.matheusmarques.neopdv.api.order.request.SalesStartRequest;
+import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
-import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
+import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ public class OrderMap {
 
     private static String START_ORDER_SUCESS = "A ordem foi iniciada com sucesso, já podem ser lançandos produtos a ela";
 
-    public static Order map(SalesStartRequest request){
+    public static Order map(OrderStartRequest request){
         Order order = new Order();
         order.setOwner(request.owner());
         order.setTicket(request.tableNumber());
@@ -29,8 +29,8 @@ public class OrderMap {
         return order;
     }
 
-    public static SalesStartResponse toSaleStartResponse(Order order){
-        return new SalesStartResponse(
+    public static OrderStartResponse toSaleStartResponse(Order order){
+        return new OrderStartResponse(
                 true,
                 START_ORDER_SUCESS,
                 order.getId(),

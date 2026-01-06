@@ -1,12 +1,12 @@
 package com.matheusmarques.neopdv.service.order.impl;
 
-import com.matheusmarques.neopdv.api.order.request.DeleteItemRequest;
+import com.matheusmarques.neopdv.api.order.request.OrderItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
-import com.matheusmarques.neopdv.api.order.request.SalesStartRequest;
+import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
-import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
+import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.build.OrderItemBuilder;
 import com.matheusmarques.neopdv.domain.enums.StatusOrder;
 import com.matheusmarques.neopdv.domain.order.Order;
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public SalesStartResponse orderStart(SalesStartRequest request){
+    public OrderStartResponse orderStart(OrderStartRequest request){
         Order orderRequest = OrderMap.map(request);
         if (repository.findByTableNumberAndStatus(orderRequest.getTicket(), StatusOrder.OPEN).isPresent()){
             throw new ValidationTableException();
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse removeItem(String orderId, DeleteItemRequest request){
+    public OrderResponse removeItem(String orderId, OrderItemDeleteRequest request){
         String itemId = request.itemId();
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
