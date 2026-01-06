@@ -6,10 +6,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record OrderCardResponse(
-        int numberOder,
-        String customer,
+        int orderNumber,
+        String customerName,
         LocalDateTime createdDate,
-        StatusOrder statusOrder,
+        StatusOrder status,
         BigDecimal amount
 ) {
 }

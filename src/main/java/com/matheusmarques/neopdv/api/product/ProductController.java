@@ -23,13 +23,13 @@ public class ProductController {
         this.service = service;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-active")
     public ResponseEntity<List<Product>> getAll(){
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getAll());
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request){

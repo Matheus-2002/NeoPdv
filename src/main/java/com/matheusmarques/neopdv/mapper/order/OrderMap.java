@@ -54,7 +54,7 @@ public class OrderMap {
 
     public static List<OrderCardResponse> toOrderCardResponse(List<Order> orders){
         List<OrderCardResponse> responseList = new ArrayList<>();
-        for (Order order : orders){
+        for (Order order: orders){
             OrderCardResponse response = new OrderCardResponse(
                     order.getTableNumber(),
                     order.getCustomer(),
