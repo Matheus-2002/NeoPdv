@@ -1,8 +1,8 @@
 package com.matheusmarques.neopdv.service.order;
 
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
-import com.matheusmarques.neopdv.api.order.request.OrderItemDeleteRequest;
-import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
@@ -17,8 +17,8 @@ public interface OrderService {
 
     OrderResponse getOrderById(String orderId);
 
-    OrderResponse removeItem(String orderId, OrderItemDeleteRequest request);
+    OrderResponse removeItem(String orderId, ItemDeleteRequest request);
 
-    OrderItemResponse addItem(OrderItemRequest request, String orderId);
+    OrderItemResponse addItem(ItemRequest request, String orderId);
 
 }

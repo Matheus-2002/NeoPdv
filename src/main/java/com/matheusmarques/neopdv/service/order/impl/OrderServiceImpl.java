@@ -1,7 +1,7 @@
 package com.matheusmarques.neopdv.service.order.impl;
 
-import com.matheusmarques.neopdv.api.order.request.OrderItemDeleteRequest;
-import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse removeItem(String orderId, OrderItemDeleteRequest request){
+    public OrderResponse removeItem(String orderId, ItemDeleteRequest request){
         String itemId = request.itemId();
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderItemResponse addItem(OrderItemRequest request, String orderId){
+    public OrderItemResponse addItem(ItemRequest request, String orderId){
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
 

@@ -1,7 +1,7 @@
 package com.matheusmarques.neopdv.api.order;
 
-import com.matheusmarques.neopdv.api.order.request.OrderItemDeleteRequest;
-import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
@@ -40,7 +40,7 @@ public class OrderController {
     }
 
     @PostMapping("/add-item/{orderId}")
-    public ResponseEntity<OrderItemResponse> addItem(@PathVariable String orderId, @RequestBody OrderItemRequest request){
+    public ResponseEntity<OrderItemResponse> addItem(@PathVariable String orderId, @RequestBody ItemRequest request){
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -55,7 +55,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete-item/{orderId}")
-    public ResponseEntity<OrderResponse> removeItem(@PathVariable String orderId, @RequestBody OrderItemDeleteRequest itemId){
+    public ResponseEntity<OrderResponse> removeItem(@PathVariable String orderId, @RequestBody ItemDeleteRequest itemId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.removeItem(orderId, itemId));

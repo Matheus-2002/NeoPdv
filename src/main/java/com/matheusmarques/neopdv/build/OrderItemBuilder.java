@@ -3,12 +3,12 @@ package com.matheusmarques.neopdv.build;
 import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.domain.order.OrderItem;
 import com.matheusmarques.neopdv.domain.product.Product;
-import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 
 import java.math.BigDecimal;
 
 public class OrderItemBuilder {
-    public static OrderItem build(Order order, Product product, OrderItemRequest request){
+    public static OrderItem build(Order order, Product product, ItemRequest request){
 
         OrderItem orderItem = new OrderItem();
         orderItem.setAmount(product.getValue().multiply(new BigDecimal(request.quantity())));
