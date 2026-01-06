@@ -32,7 +32,7 @@ public class OrderController {
     public ResponseEntity<List<OrderCardResponse>> getCardOrders(){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getCardOrders());
+                .body(service.getAll());
     }
 
     @PostMapping("/start")

@@ -16,8 +16,9 @@ public class Order {
     @MongoId
     private String id;
     private String owner;
-    @Min(value = 1, message = "Table number must be greater than 0")
-    private int tableNumber;
+    private String customer;
+    @Min(value = 1, message = "Valor do ticket deve ser maior que 0")
+    private int ticket;
     @NotNull
     @PositiveOrZero
     private BigDecimal amount;
@@ -26,7 +27,6 @@ public class Order {
     private StatusOrder status;
     private LocalDateTime createdDate;
     private List<String> itemsId;
-    private String customer;
 
     public Order() {
     }
@@ -39,12 +39,12 @@ public class Order {
         this.customer = customer;
     }
 
-    public int getTableNumber() {
-        return tableNumber;
+    public int getTicket() {
+        return ticket;
     }
 
-    public void setTableNumber(int tableNumber) {
-        this.tableNumber = tableNumber;
+    public void setTicket(int ticket) {
+        this.ticket = ticket;
     }
 
     public String getId() {

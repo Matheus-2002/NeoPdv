@@ -21,7 +21,7 @@ public class OrderMap {
     public static Order map(SalesStartRequest request){
         Order order = new Order();
         order.setOwner(request.owner());
-        order.setTableNumber(request.tableNumber());
+        order.setTicket(request.tableNumber());
         order.setAmount(new BigDecimal(0));
         order.setStatus(StatusOrder.OPEN);
         order.setCreatedDate(LocalDateTime.now());
@@ -43,7 +43,7 @@ public class OrderMap {
         return new OrderResponse(
                 order.getId(),
                 order.getOwner(),
-                order.getTableNumber(),
+                order.getTicket(),
                 order.getAmount(),
                 order.getPaymentMethod(),
                 order.getStatus(),
@@ -56,7 +56,7 @@ public class OrderMap {
         List<OrderCardResponse> responseList = new ArrayList<>();
         for (Order order: orders){
             OrderCardResponse response = new OrderCardResponse(
-                    order.getTableNumber(),
+                    order.getTicket(),
                     order.getCustomer(),
                     order.getCreatedDate(),
                     order.getStatus(),

@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public SalesStartResponse orderStart(SalesStartRequest request){
         Order orderRequest = OrderMap.map(request);
-        if (repository.findByTableNumberAndStatus(orderRequest.getTableNumber(), StatusOrder.OPEN).isPresent()){
+        if (repository.findByTableNumberAndStatus(orderRequest.getTicket(), StatusOrder.OPEN).isPresent()){
             throw new ValidationTableException();
         }
         Order orderSave = repository.save(orderRequest);
