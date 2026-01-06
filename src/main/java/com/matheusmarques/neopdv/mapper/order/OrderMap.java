@@ -43,6 +43,7 @@ public class OrderMap {
         return new OrderResponse(
                 order.getId(),
                 order.getOwner(),
+                order.getCustomer(),
                 order.getTicket(),
                 order.getAmount(),
                 order.getPaymentMethod(),
