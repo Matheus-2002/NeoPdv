@@ -10,65 +10,19 @@ import com.matheusmarques.neopdv.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-@Service
-public class ProductService {
-    private final ProductRepository repository;
+public interface ProductService {
 
-    public ProductService(ProductRepository repository){
-        this.repository = repository;
-    }
+    List<Product> getAll();
 
-    public ProductResponse updateProduct(String productId, ProductRequest request){
-        Product oldProduct = repository.findById(productId)
-                .orElseThrow()
-                ;
-        Product newProduct = ProductMap.map(request);
-        newProduct.setId(oldProduct.getId());
+    ProductResponse updateProduct(String productId, ProductRequest request);
 
-        Product updateProduct = repository.save(newProduct);
+    ProductResponse createProduct(ProductRequest request);
 
-        return ProductMap.toResponse(updateProduct, "Produto Atualizado com Sucesso");
-    }
+    ProductResponse updateValue(String productId, BigDecimal value);
 
-    public ProductResponse createProduct(ProductRequest request){
-        Product product = ProductMap.map(request);
+    ProductResponse updateStock(String productId, int stock);
 
-        if (repository.findByCodebar(product.getCodebar()).isPresent()){
-            throw new ValidateCodebarException("O codigo de barras já está registrado em outro produto");
-        }
-
-        Product productSave = repository.save(product);
-        return ProductMap.toResponse(productSave, "Produto Criado com Sucesso");
-    }
-
-    public ProductResponse updateValue(String productId, BigDecimal value){
-        Product product = repository.findById(productId)
-                .orElseThrow(() -> new ValidateProduct("O id do produto não existe no banco de dados"));
-
-        product.setValue(value);
-        repository.save(product);
-
-        return ProductMap.toResponse(product, "Valor atualizado");
-    }
-
-    public ProductResponse updateStock(String productId, int stock){
-        Product product = repository.findById(productId)
-                .orElseThrow(() -> new ValidateProduct("O id do produto não existe no banco de dados"));
-
-        product.setStock(stock);
-        repository.save(product);
-
-        return ProductMap.toResponse(product, "Estoque atualizado");
-    }
-
-    public ProductResponse updateName(String productId, String name){
-        Product product = repository.findById(productId)
-                .orElseThrow(() -> new ValidateProduct("O id do produto não existe no banco de dados"));
-
-        product.setName(name);
-        repository.save(product);
-
-        return ProductMap.toResponse(product, "Nome atualizado");
-    }
+    ProductResponse updateName(String productId, String name);
 }

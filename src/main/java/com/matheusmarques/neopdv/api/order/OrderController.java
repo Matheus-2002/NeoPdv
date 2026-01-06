@@ -3,11 +3,13 @@ package com.matheusmarques.neopdv.api.order;
 import com.matheusmarques.neopdv.api.order.request.DeleteItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
 import com.matheusmarques.neopdv.api.order.request.SalesStartRequest;
+import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
 import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
 import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.service.order.OrderService;
+import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,9 @@ import java.util.List;
 @RequestMapping("/order")
 public class OrderController {
 
-    private OrderService service;
+    private OrderServiceImpl service;
 
-    public OrderController(OrderService service){
+    public OrderController(OrderServiceImpl service){
         this.service = service;
     }
 
@@ -55,7 +57,7 @@ public class OrderController {
     }
 
     @GetMapping("/all-open")
-    public ResponseEntity<List<Order>> getAll(){
+    public ResponseEntity<List<OrderCardResponse>> getAll(){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getAll());
