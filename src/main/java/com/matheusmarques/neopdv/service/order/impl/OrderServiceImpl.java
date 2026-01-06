@@ -4,7 +4,7 @@ import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
-import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
+import com.matheusmarques.neopdv.api.order.response.ItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.build.OrderItemBuilder;
@@ -45,11 +45,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderStartResponse orderStart(OrderStartRequest request){
         Order orderRequest = OrderMap.map(request);
-        if (repository.findByTableNumberAndStatus(orderRequest.getTicket(), StatusOrder.OPEN).isPresent()){
+        if (repository.findByTicketAndStatus(orderRequest.getTicket(), StatusOrder.OPEN).isPresent()){
             throw new ValidationTableException();
         }
         Order orderSave = repository.save(orderRequest);
-        return OrderMap.toSaleStartResponse(orderSave);
+        return OrderMap.toOrderStartResponse(orderSave);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderItemResponse addItem(ItemRequest request, String orderId){
+    public ItemResponse addItem(ItemRequest request, String orderId){
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
 
@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         order.getItemsId().add(orderItemSave.getId());
         repository.save(order);
 
-        return new OrderItemResponse(
+        return new ItemResponse(
                 true,
                 "Inserção feita com sucesso",
                 orderItemSave.getId()

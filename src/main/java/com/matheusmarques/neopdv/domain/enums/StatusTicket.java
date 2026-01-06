@@ -1,6 +1,6 @@
 package com.matheusmarques.neopdv.domain.enums;
 
-public enum StatusTable {
+public enum StatusTicket {
     FREE,
     OCCUPIED,
     NOT_FOUND

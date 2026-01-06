@@ -4,7 +4,7 @@ import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
-import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
+import com.matheusmarques.neopdv.api.order.response.ItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
@@ -40,8 +40,7 @@ public class OrderController {
     }
 
     @PostMapping("/add-item/{orderId}")
-    public ResponseEntity<OrderItemResponse> addItem(@PathVariable String orderId, @RequestBody ItemRequest request){
-
+    public ResponseEntity<ItemResponse> addItem(@PathVariable String orderId, @RequestBody ItemRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.addItem(request, orderId));

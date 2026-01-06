@@ -1,6 +1,6 @@
 package com.matheusmarques.neopdv.exception;
 
-import com.matheusmarques.neopdv.domain.enums.StatusTable;
+import com.matheusmarques.neopdv.domain.enums.StatusTicket;
 import com.matheusmarques.neopdv.exception.response.ExceptionResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.exception.custom.*;
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
                                 false,
                                 ex.getMessage(),
                                 null,
-                                StatusTable.OCCUPIED,
+                                StatusTicket.OCCUPIED,
                                 LocalDateTime.now()
                         )
                 );

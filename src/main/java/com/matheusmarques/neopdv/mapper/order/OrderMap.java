@@ -4,7 +4,7 @@ import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
 import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.domain.order.OrderItem;
 import com.matheusmarques.neopdv.domain.enums.StatusOrder;
-import com.matheusmarques.neopdv.domain.enums.StatusTable;
+import com.matheusmarques.neopdv.domain.enums.StatusTicket;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
@@ -20,8 +20,8 @@ public class OrderMap {
 
     public static Order map(OrderStartRequest request){
         Order order = new Order();
-        order.setOwner(request.owner());
-        order.setTicket(request.tableNumber());
+        order.setOwner(request.customer());
+        order.setTicket(request.ticket());
         order.setAmount(new BigDecimal(0));
         order.setStatus(StatusOrder.OPEN);
         order.setCreatedDate(LocalDateTime.now());
@@ -29,12 +29,12 @@ public class OrderMap {
         return order;
     }
 
-    public static OrderStartResponse toSaleStartResponse(Order order){
+    public static OrderStartResponse toOrderStartResponse(Order order){
         return new OrderStartResponse(
                 true,
                 START_ORDER_SUCESS,
                 order.getId(),
-                StatusTable.FREE,
+                StatusTicket.FREE,
                 order.getCreatedDate()
         );
     }
