@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Não conseguimos salvar a imagem na pasta");
         }
 
-        product.setImagePath(PATH + product.getName()+extensao);
+        product.setPathImage(PATH + product.getName()+extensao);
 
         repository.save(product);
 
