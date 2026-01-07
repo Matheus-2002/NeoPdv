@@ -1,14 +1,13 @@
 package com.matheusmarques.neopdv.api.order;
 
-import com.matheusmarques.neopdv.api.order.request.DeleteItemRequest;
-import com.matheusmarques.neopdv.api.order.request.OrderItemRequest;
-import com.matheusmarques.neopdv.api.order.request.SalesStartRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
+import com.matheusmarques.neopdv.api.order.request.ItemRequest;
+import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
-import com.matheusmarques.neopdv.api.order.response.OrderItemResponse;
+import com.matheusmarques.neopdv.api.order.response.ItemResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderResponse;
-import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
-import com.matheusmarques.neopdv.domain.order.Order;
-import com.matheusmarques.neopdv.service.order.OrderService;
+import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
+import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
 import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
@@ -21,9 +20,9 @@ import java.util.List;
 @RequestMapping("/order")
 public class OrderController {
 
-    private OrderService service;
+    private OrderServiceImpl service;
 
-    public OrderController(OrderService service){
+    public OrderController(OrderServiceImpl service){
         this.service = service;
     }
 
@@ -31,40 +30,39 @@ public class OrderController {
     public ResponseEntity<List<OrderCardResponse>> getCardOrders(){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getCardOrders());
+                .body(service.getAll());
     }
 
     @PostMapping("/start")
-    public ResponseEntity<SalesStartResponse> startOrder (@RequestBody @Valid SalesStartRequest request){
+    public ResponseEntity<OrderStartResponse> startOrder (@RequestBody @Valid OrderStartRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.orderStart(request));
     }
 
     @PostMapping("/add-item/{orderId}")
-    public ResponseEntity<OrderItemResponse> addItem(@PathVariable String orderId, @RequestBody OrderItemRequest request){
-
+    public ResponseEntity<ItemResponse> addItem(@PathVariable String orderId, @RequestBody ItemRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.addItem(request, orderId));
     }
 
-    @GetMapping("/enter/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable String orderId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getOrderById(orderId));
     }
 
-    @DeleteMapping("/deleteItem/{orderId}")
-    public ResponseEntity<OrderResponse> removeItem(@PathVariable String orderId, @RequestBody DeleteItemRequest itemId){
+    @DeleteMapping("/delete-item/{orderId}")
+    public ResponseEntity<OrderResponse> removeItem(@PathVariable String orderId, @RequestBody ItemDeleteRequest itemId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.removeItem(orderId, itemId));
     }
 
     @GetMapping("/all-open")
-    public ResponseEntity<List<Order>> getAll(){
+    public ResponseEntity<List<OrderCardResponse>> getAll(){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getAll());

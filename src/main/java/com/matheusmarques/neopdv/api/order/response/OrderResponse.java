@@ -11,7 +11,8 @@ import java.util.List;
 public record OrderResponse(
         String id,
         String owner,
-        int tableNumber,
+        String customer,
+        int ticket,
         BigDecimal amount,
         PaymentMethod paymentMethod,
         StatusOrder status,

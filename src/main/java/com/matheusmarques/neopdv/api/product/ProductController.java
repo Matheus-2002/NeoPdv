@@ -3,7 +3,7 @@ package com.matheusmarques.neopdv.api.product;
 import com.matheusmarques.neopdv.api.product.request.ProductRequest;
 import com.matheusmarques.neopdv.api.product.response.ProductResponse;
 import com.matheusmarques.neopdv.domain.product.Product;
-import com.matheusmarques.neopdv.service.product.ProductService;
+import com.matheusmarques.neopdv.service.product.impl.ProductServiceImpl;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,9 +18,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-    private final ProductService service;
+    private final ProductServiceImpl service;
 
-    public ProductController(ProductService service){
+    public ProductController(ProductServiceImpl service){
         this.service = service;
     }
 

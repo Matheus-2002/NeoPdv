@@ -1,13 +1,13 @@
 package com.matheusmarques.neopdv.api.order.response;
 
-import com.matheusmarques.neopdv.domain.enums.StatusTable;
+import com.matheusmarques.neopdv.domain.enums.StatusTicket;
 import java.time.LocalDateTime;
 
-public record SalesStartResponse(
+public record OrderStartResponse(
         Boolean success,
         String message,
         String orderId,
-        StatusTable statusTable,
+        StatusTicket statusTicket,
         LocalDateTime timestamp
 ) {
 }

@@ -1,8 +1,8 @@
 package com.matheusmarques.neopdv.exception;
 
-import com.matheusmarques.neopdv.domain.enums.StatusTable;
+import com.matheusmarques.neopdv.domain.enums.StatusTicket;
 import com.matheusmarques.neopdv.exception.response.ExceptionResponse;
-import com.matheusmarques.neopdv.api.order.response.SalesStartResponse;
+import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.exception.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ValidationTableException.class)
-    public ResponseEntity<SalesStartResponse> handleValidationTable(ValidationTableException ex){
+    public ResponseEntity<OrderStartResponse> handleValidationTable(ValidationTableException ex){
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(
-                        new SalesStartResponse(
+                        new OrderStartResponse(
                                 false,
                                 ex.getMessage(),
                                 null,
-                                StatusTable.OCCUPIED,
+                                StatusTicket.OCCUPIED,
                                 LocalDateTime.now()
                         )
                 );
