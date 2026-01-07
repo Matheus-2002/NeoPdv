@@ -27,7 +27,7 @@ public class OrderController {
         this.service = service;
     }
 
-    @GetMapping("/all-orders/card")
+    @GetMapping("/all-cards")
     public ResponseEntity<List<OrderCardResponse>> getCardOrders(){
         return ResponseEntity
                 .status(HttpStatus.OK)

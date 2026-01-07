@@ -16,8 +16,17 @@ public class Product {
     private BigDecimal value;
     private int stock;
     private String codebar;
+    private String imagePath;
 
     public Product() {
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public String getId() {

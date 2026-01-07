@@ -10,6 +10,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,6 +22,13 @@ public class ProductController {
 
     public ProductController(ProductService service){
         this.service = service;
+    }
+
+    @PostMapping("/insert-image/{idProduct}")
+    public ResponseEntity<ProductResponse> insertImage(@RequestParam("file") MultipartFile file, @PathVariable String idProduct) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.insertImage(file, idProduct));
     }
 
     @GetMapping("/all-active")
