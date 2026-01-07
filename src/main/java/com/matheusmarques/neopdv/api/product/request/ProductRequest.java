@@ -7,8 +7,11 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record ProductRequest(
+        
         @NotBlank
         String name,
+        @NotBlank
+        String category,
         @NotNull
         @PositiveOrZero
         BigDecimal value,

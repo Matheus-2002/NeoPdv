@@ -12,12 +12,39 @@ public class Product {
     @MongoId
     private String id;
     private String name;
+    private String category;
     @AuditableField
     private BigDecimal value;
     private int stock;
     private String codebar;
+    private String pathImage;
+    private boolean active;
 
     public Product() {
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getPathImage() {
+        return pathImage;
+    }
+
+    public void setPathImage(String pathImage) {
+        this.pathImage = pathImage;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getId() {
