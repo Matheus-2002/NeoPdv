@@ -9,6 +9,7 @@ import com.matheusmarques.neopdv.api.order.response.OrderResponse;
 import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
+import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class OrderController {
         this.service = service;
     }
 
-    @GetMapping("/all-active/cards")
+    @GetMapping("/all-cards")
     public ResponseEntity<List<OrderCardResponse>> getCardOrders(){
         return ResponseEntity
                 .status(HttpStatus.OK)

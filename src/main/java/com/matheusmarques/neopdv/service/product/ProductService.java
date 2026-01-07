@@ -8,11 +8,14 @@ import com.matheusmarques.neopdv.exception.custom.ValidateProduct;
 import com.matheusmarques.neopdv.mapper.product.ProductMap;
 import com.matheusmarques.neopdv.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
+
+    ProductResponse insertImage(MultipartFile file, String idProduct);
 
     List<Product> getAll();
 

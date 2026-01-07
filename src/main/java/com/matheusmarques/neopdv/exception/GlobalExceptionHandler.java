@@ -95,4 +95,15 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(ValidateImageException.class)
+    public ResponseEntity<ExceptionResponse> handleImageProduct(ValidateImageException ex){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ExceptionResponse(
+                        false,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
 }

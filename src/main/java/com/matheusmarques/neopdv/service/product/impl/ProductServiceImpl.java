@@ -3,18 +3,28 @@ package com.matheusmarques.neopdv.service.product.impl;
 import com.matheusmarques.neopdv.api.product.request.ProductRequest;
 import com.matheusmarques.neopdv.api.product.response.ProductResponse;
 import com.matheusmarques.neopdv.domain.product.Product;
+import com.matheusmarques.neopdv.exception.custom.ProductNotFoundException;
 import com.matheusmarques.neopdv.exception.custom.ValidateCodebarException;
+import com.matheusmarques.neopdv.exception.custom.ValidateImageException;
 import com.matheusmarques.neopdv.exception.custom.ValidateProduct;
 import com.matheusmarques.neopdv.mapper.product.ProductMap;
 import com.matheusmarques.neopdv.repository.ProductRepository;
 import com.matheusmarques.neopdv.service.product.ProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+
+    private final String PATH = "C:\\PROJECTS\\front\\claudePdv\\resource\\produtos\\";
 
     private final ProductRepository repository;
 
@@ -24,6 +34,40 @@ public class ProductServiceImpl implements ProductService {
 
     public List<Product> getAll(){
         return repository.findAll();
+    }
+
+    @Override
+    public ProductResponse insertImage(MultipartFile file, String idProduct){
+        if (file.isEmpty()){
+            throw new ValidateImageException("Imagem inválida");
+        }
+
+        Product product = repository.findById(idProduct).orElseThrow(
+                () -> new ProductNotFoundException("Produto não encontrado. ID: " + idProduct)
+        );
+
+        String extensao = Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf("."));
+
+        Path caminho = Paths.get(PATH + product.getName()+extensao);
+
+        try{
+            Files.write(caminho, file.getBytes());
+
+        }catch (IOException e){
+            throw new RuntimeException("Não conseguimos salvar a imagem na pasta");
+        }
+
+        product.setImagePath(PATH + product.getName()+extensao);
+
+        repository.save(product);
+
+        return new ProductResponse(
+                true,
+                "Imagem salva com sucesso",
+                product
+        );
+
     }
 
     @Override
