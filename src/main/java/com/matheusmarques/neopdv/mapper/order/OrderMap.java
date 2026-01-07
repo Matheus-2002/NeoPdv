@@ -20,7 +20,8 @@ public class OrderMap {
 
     public static Order map(OrderStartRequest request){
         Order order = new Order();
-        order.setOwner(request.customer());
+        order.setOwner("");
+        order.setCustomer(request.customer());
         order.setTicket(request.ticket());
         order.setAmount(new BigDecimal(0));
         order.setStatus(StatusOrder.OPEN);
