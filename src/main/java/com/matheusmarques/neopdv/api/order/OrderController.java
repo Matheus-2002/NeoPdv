@@ -10,6 +10,7 @@ import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
 import org.apache.catalina.connector.Response;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +53,13 @@ public class OrderController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getOrderById(orderId));
+    }
+
+    @GetMapping("/ticket/{ticket}")
+    public ResponseEntity<OrderResponse> getOrderByTicket(@PathVariable int ticket){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getOrderByTicket(ticket));
     }
 
     @DeleteMapping("/delete-item/{orderId}")

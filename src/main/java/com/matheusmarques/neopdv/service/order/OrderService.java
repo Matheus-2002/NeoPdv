@@ -21,4 +21,6 @@ public interface OrderService {
 
     ItemResponse addItem(ItemRequest request, String orderId);
 
+    OrderResponse getOrderByTicket(int ticket);
+
 }

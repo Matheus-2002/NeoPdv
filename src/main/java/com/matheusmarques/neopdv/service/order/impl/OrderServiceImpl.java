@@ -20,6 +20,7 @@ import com.matheusmarques.neopdv.repository.ProductRepository;
 import com.matheusmarques.neopdv.service.order.OrderService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,6 +41,18 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
 
         return OrderMap.toOrderCardResponse(orders);
+    }
+
+    @Override
+    public OrderResponse getOrderByTicket(int ticket){
+        Order order = repository.findByTicketAndStatus(ticket, StatusOrder.OPEN).orElseThrow();
+        if(order.getItemsId().isEmpty()){
+            return OrderMap.toOrderResponse(order, new ArrayList<>());
+        }
+
+        List<OrderItem> itemList = orderItemRepository.findAllById(order.getItemsId());
+
+        return OrderMap.toOrderResponse(order, itemList);
     }
 
     @Override
