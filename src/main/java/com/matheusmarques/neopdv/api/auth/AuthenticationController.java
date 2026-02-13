@@ -1,8 +1,10 @@
 package com.matheusmarques.neopdv.api.auth;
 
 import com.matheusmarques.neopdv.api.auth.request.AuthenticationDTO;
+import com.matheusmarques.neopdv.api.auth.request.RefreshTokenRequest;
 import com.matheusmarques.neopdv.api.auth.request.RegisterDTO;
 import com.matheusmarques.neopdv.api.auth.response.LoginResponseDTO;
+import com.matheusmarques.neopdv.api.auth.response.RefreshTokenResponse;
 import com.matheusmarques.neopdv.domain.shared.UserRole;
 import com.matheusmarques.neopdv.domain.user.User;
 import com.matheusmarques.neopdv.repository.UserRepository;
@@ -39,11 +41,25 @@ public class AuthenticationController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(request.login(), request.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((User)auth.getPrincipal());
-
+        var accessToken = tokenService.generateAccessToken((User)auth.getPrincipal());
+        var refreshToken = tokenService.generateRefreshToken((User)auth.getPrincipal());
 
         return ResponseEntity
-                .ok(new LoginResponseDTO(token));
+                .ok(new LoginResponseDTO(accessToken, refreshToken));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest request){
+        String email = tokenService.validateToken(request.refreshToken());
+        if (email.isEmpty()) {
+            throw new RuntimeException("Refresh token inválido ou expirado");
+        }
+        User user = new User();
+        user.setEmail(email);
+        return ResponseEntity
+                .ok(new RefreshTokenResponse(
+                tokenService.generateAccessToken(user)
+        ));
     }
 
     @PostMapping("/register")
