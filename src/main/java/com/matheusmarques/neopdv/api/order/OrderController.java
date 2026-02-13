@@ -3,13 +3,9 @@ package com.matheusmarques.neopdv.api.order;
 import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
-import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
-import com.matheusmarques.neopdv.api.order.response.ItemResponse;
-import com.matheusmarques.neopdv.api.order.response.OrderResponse;
-import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
+import com.matheusmarques.neopdv.api.order.response.*;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +26,7 @@ public class OrderController {
     public ResponseEntity<List<OrderCardResponse>> getCardOrders(){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getAll());
+                .body(service.getAllOpen());
     }
 
     @PostMapping("/start")
@@ -62,9 +58,30 @@ public class OrderController {
     }
 
     @GetMapping("/all-open")
-    public ResponseEntity<List<OrderCardResponse>> getAll(){
+    public ResponseEntity<List<OrderCardResponse>> getAllOpen(){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getAll());
+                .body(service.getAllOpen());
+    }
+
+    @GetMapping("/amount-today")
+    public ResponseEntity<AmountTodayResponse> getAmountToday(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getAmountToday());
+    }
+
+    @GetMapping("/sales-today")
+    public ResponseEntity<SalesTodayResponse> getSalesToday(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getSalesToday());
+    }
+
+    @GetMapping("/all-open/quantity")
+    public ResponseEntity<QuantityOrdersOpenResponse> getQuantityOpenOders(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getQuantityOpenOders());
     }
 }

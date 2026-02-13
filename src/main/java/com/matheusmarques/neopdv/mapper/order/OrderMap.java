@@ -25,7 +25,7 @@ public class OrderMap {
         order.setTicket(request.ticket());
         order.setAmount(new BigDecimal(0));
         order.setStatus(StatusOrder.OPEN);
-        order.setCreatedDate(LocalDateTime.now());
+        order.setCreatedAt(LocalDateTime.now());
         order.setItemsId(new ArrayList<>());
         return order;
     }
@@ -36,7 +36,7 @@ public class OrderMap {
                 START_ORDER_SUCESS,
                 order.getId(),
                 StatusTicket.FREE,
-                order.getCreatedDate()
+                order.getCreatedAt()
         );
     }
 
@@ -49,7 +49,7 @@ public class OrderMap {
                 order.getAmount(),
                 order.getPaymentMethod(),
                 order.getStatus(),
-                order.getCreatedDate(),
+                order.getCreatedAt(),
                 itemList
         );
     }
@@ -59,10 +59,9 @@ public class OrderMap {
         for (Order order: orders){
             OrderCardResponse response = new OrderCardResponse(
                     order.getTicket(),
-                    order.getCustomer(),
-                    order.getCreatedDate(),
-                    order.getStatus(),
-                    order.getAmount()
+                    order.getCreatedAt(),
+                    order.getAmount(),
+                    order.getItemsId().size()
             );
             responseList.add(response);
         }

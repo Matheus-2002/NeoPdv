@@ -1,0 +1,21 @@
+TELA DE INICIO:
+
+Card Ordem -->
+
+Enviar: Numero da comanda, horário, Total, quantidade de itens
+
+Valor total -->
+
+Enviar: Valor total vendido no dia
+
+Quantidade de Vendas -->
+
+Enviar: Quantos vendas tiveram no dia
+
+Top Produto
+
+Enviar: Produto mais vendido na semana
+
+Vendas Abertas -->
+
+Enviar: Mandar a quantidade de comandas em abertas

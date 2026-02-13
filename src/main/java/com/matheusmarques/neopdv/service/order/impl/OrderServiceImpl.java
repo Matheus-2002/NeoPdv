@@ -3,10 +3,7 @@ package com.matheusmarques.neopdv.service.order.impl;
 import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
-import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
-import com.matheusmarques.neopdv.api.order.response.ItemResponse;
-import com.matheusmarques.neopdv.api.order.response.OrderResponse;
-import com.matheusmarques.neopdv.api.order.response.OrderStartResponse;
+import com.matheusmarques.neopdv.api.order.response.*;
 import com.matheusmarques.neopdv.build.OrderItemBuilder;
 import com.matheusmarques.neopdv.domain.enums.StatusOrder;
 import com.matheusmarques.neopdv.domain.order.Order;
@@ -20,6 +17,10 @@ import com.matheusmarques.neopdv.repository.ProductRepository;
 import com.matheusmarques.neopdv.service.order.OrderService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -36,7 +37,51 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderCardResponse> getAll(){
+    public QuantityOrdersOpenResponse getQuantityOpenOders(){
+
+        List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
+
+        if(orders.isEmpty()){return new QuantityOrdersOpenResponse(0);}
+
+        return new QuantityOrdersOpenResponse(orders.size());
+    }
+
+    @Override
+    public SalesTodayResponse getSalesToday(){
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.atTime(LocalTime.MAX);
+
+        List<Order> orders = repository.findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED);
+
+        if(orders.isEmpty()){return new SalesTodayResponse(0);}
+
+        return new SalesTodayResponse(orders.size());
+    }
+
+    @Override
+    public AmountTodayResponse getAmountToday(){
+
+        BigDecimal amountToday = BigDecimal.ZERO;
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.atTime(LocalTime.MAX);
+
+        List<Order> orders = repository.findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED);
+
+        if(orders.isEmpty()){return new AmountTodayResponse(amountToday);}
+
+
+        for (Order order : orders) {
+            amountToday = amountToday.add(order.getAmount());
+        }
+        return new AmountTodayResponse(amountToday);
+    }
+
+    @Override
+    public List<OrderCardResponse> getAllOpen(){
         List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
 
         return OrderMap.toOrderCardResponse(orders);

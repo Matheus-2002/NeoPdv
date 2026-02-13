@@ -25,7 +25,7 @@ public class Order {
     private PaymentMethod paymentMethod;
     @NotBlank
     private StatusOrder status;
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
     private List<String> itemsId;
 
     public Order() {
@@ -87,12 +87,12 @@ public class Order {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public List<String> getItemsId() {
