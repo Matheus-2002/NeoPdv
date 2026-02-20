@@ -70,7 +70,6 @@ public class OrderServiceImpl implements OrderService {
         LocalDateTime end = today.atTime(LocalTime.MAX);
 
         List<Order> orders = repository.findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED);
-
         if(orders.isEmpty()){return new AmountTodayResponse(amountToday);}
 
 

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record OrderCardResponse(
+        String id,
         int ticket,
         LocalDateTime createdDate,
         BigDecimal amount,

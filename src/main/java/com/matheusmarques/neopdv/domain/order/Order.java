@@ -3,6 +3,8 @@ package com.matheusmarques.neopdv.domain.order;
 import com.matheusmarques.neopdv.domain.enums.PaymentMethod;
 import com.matheusmarques.neopdv.domain.enums.StatusOrder;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import jakarta.validation.constraints.*;
 
@@ -21,6 +23,7 @@ public class Order {
     private int ticket;
     @NotNull
     @PositiveOrZero
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
     @NotBlank

@@ -36,6 +36,14 @@ public class ProductServiceImpl implements ProductService {
         return repository.findAll();
     }
 
+    public List<Product> getCategory(String category){
+        return repository.findByCategory(category);
+    }
+
+    public Product getProduct(String id){
+        return repository.findById(id).orElseThrow();
+    }
+
     @Override
     public ProductResponse insertImage(MultipartFile file, String idProduct){
         if (file.isEmpty()){

@@ -58,6 +58,7 @@ public class OrderMap {
         List<OrderCardResponse> responseList = new ArrayList<>();
         for (Order order: orders){
             OrderCardResponse response = new OrderCardResponse(
+                    order.getId(),
                     order.getTicket(),
                     order.getCreatedAt(),
                     order.getAmount(),

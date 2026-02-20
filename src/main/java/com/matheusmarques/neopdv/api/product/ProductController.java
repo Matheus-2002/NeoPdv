@@ -38,6 +38,20 @@ public class ProductController {
                 .body(service.getAll());
     }
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> getProduct(@PathVariable String productId){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getProduct(productId));
+    }
+
+    @GetMapping("/all-active/{category}")
+    public ResponseEntity<List<Product>> getCategory(@PathVariable String category){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getCategory(category));
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request){
