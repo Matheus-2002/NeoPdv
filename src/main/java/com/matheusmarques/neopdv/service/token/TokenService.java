@@ -16,17 +16,33 @@ import java.time.ZoneOffset;
 public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
+    private static final long ACCESS_EXPIRATION_MINUTES = 2;
+    private static final long REFRESH_EXPIRATION_DAYS = 7;
 
-    public String generateToken(User user){
+
+    public String generateAccessToken(User user){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
+            return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
-                    .withExpiresAt(genExpirationDate())
+                    .withExpiresAt(genExpirationDateMinutes(ACCESS_EXPIRATION_MINUTES))
                     .sign(algorithm);
 
-            return token;
+        }catch (JWTCreationException ex){
+            throw new RuntimeException("Error while generation token", ex);
+
+        }
+    }
+
+    public String generateRefreshToken(User user){
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.create()
+                    .withIssuer("auth-api")
+                    .withSubject(user.getEmail())
+                    .withExpiresAt(genExpirationDateDays(REFRESH_EXPIRATION_DAYS))
+                    .sign(algorithm);
 
         }catch (JWTCreationException ex){
             throw new RuntimeException("Error while generation token", ex);
@@ -47,7 +63,15 @@ public class TokenService {
         }
     }
 
-    private Instant genExpirationDate(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    private Instant genExpirationDateMinutes(long minutes) {
+        return LocalDateTime.now()
+                .plusMinutes(minutes)
+                .toInstant(ZoneOffset.of("-03:00"));
+    }
+
+    private Instant genExpirationDateDays(long days) {
+        return LocalDateTime.now()
+                .plusDays(days)
+                .toInstant(ZoneOffset.of("-03:00"));
     }
 }
