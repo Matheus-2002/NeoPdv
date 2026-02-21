@@ -12,6 +12,8 @@ public class ProductMap {
         product.setValue(request.value());
         product.setStock(request.stock());
         product.setCodebar(request.codebar());
+        product.setCategory(request.category());
+        product.setActive(true);
 
         return product;
     }

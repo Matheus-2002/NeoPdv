@@ -174,6 +174,17 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    public Order closedOrder(String orderId){
+        Order order = repository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
+
+        order.setStatus(StatusOrder.CLOSED);
+
+        repository.save(order);
+
+        return order;
+    }
+
     public ItemResponse subItem(ItemRequest request, String orderId){
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));

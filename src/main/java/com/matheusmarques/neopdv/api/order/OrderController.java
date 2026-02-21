@@ -4,6 +4,7 @@ import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.*;
+import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,14 @@ public class OrderController {
                 .status(HttpStatus.CREATED)
                 .body(service.subItem(request, orderId));
     }
+
+    @GetMapping("/close/{orderId}")
+    public ResponseEntity<Order> closedOrder(@PathVariable String orderId){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(service.closedOrder(orderId));
+    }
+
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable String orderId){
