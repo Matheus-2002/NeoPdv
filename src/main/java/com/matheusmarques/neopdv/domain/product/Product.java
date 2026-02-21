@@ -15,7 +15,7 @@ public class Product {
     private String category;
     @AuditableField
     private BigDecimal value;
-    private int stock;
+    private Integer stock;
     private String codebar;
     private String pathImage;
     private boolean active;
@@ -71,11 +71,11 @@ public class Product {
         this.value = value;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 

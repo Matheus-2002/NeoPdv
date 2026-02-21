@@ -12,5 +12,7 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     Optional<Product> findByCodebar(String codebar);
 
-    List<Product> findByCategory(String category);
+    List<Product> findByCategoryAndActive(String category, boolean active);
+
+    List<Product> findByActive(boolean active);
 }

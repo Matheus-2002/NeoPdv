@@ -43,6 +43,13 @@ public class OrderController {
                 .body(service.addItem(request, orderId));
     }
 
+    @PostMapping("/sub-item/{orderId}")
+    public ResponseEntity<ItemResponse> subItem(@PathVariable String orderId, @RequestBody ItemRequest request){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(service.subItem(request, orderId));
+    }
+
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable String orderId){
         return ResponseEntity

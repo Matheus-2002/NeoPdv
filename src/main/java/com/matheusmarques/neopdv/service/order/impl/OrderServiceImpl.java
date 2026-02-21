@@ -126,31 +126,85 @@ public class OrderServiceImpl implements OrderService {
         return OrderMap.toOrderResponse(repository.save(order), orderItemRepository.findAllById(order.getItemsId()));
     }
 
+    //Arrumar logica maior que 0 para colcoar produto
     @Override
     public ItemResponse addItem(ItemRequest request, String orderId){
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
 
-        if (!(order.getStatus() == StatusOrder.OPEN)){
+
+        if (order.getStatus() != StatusOrder.OPEN){
             throw new StatusOrderException("O pedido não não está aberto");
         }
 
         Product product = productRepository.findById(request.productId())
                 .orElseThrow(() -> new ProductNotFoundException("Product não encontrado, id inválido"));
 
-        OrderItem orderItem = OrderItemBuilder.build(order, product, request);
-        OrderItem orderItemSave = orderItemRepository.save(orderItem);
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderIdAndProductId(order.getId(), product.getId());
 
-        product.setStock(product.getStock()-orderItemSave.getQuantity());
+        if (orderItemList.isEmpty()){
+            OrderItem orderItem = OrderItemBuilder.build(order, product, request);
+            OrderItem orderItemSave = orderItemRepository.save(orderItem);
 
-        order.setAmount(order.getAmount().add(orderItemSave.getAmount()));
-        order.getItemsId().add(orderItemSave.getId());
+            product.setStock(product.getStock()-orderItemSave.getQuantity());
+
+            order.setAmount(order.getAmount().add(orderItemSave.getAmount()));
+            order.getItemsId().add(orderItemSave.getId());
+            repository.save(order);
+
+            return new ItemResponse(
+                    true,
+                    "Inserção feita com sucesso",
+                    orderItemSave.getId()
+            );
+        }else{
+            BigDecimal amount = product.getValue().multiply(BigDecimal.valueOf(request.quantity()));
+            product.setStock(product.getStock()-request.quantity());
+            OrderItem orderItem = orderItemList.getFirst();
+            orderItem.setQuantity(orderItem.getQuantity()+request.quantity());
+            orderItem.setAmount(orderItem.getAmount().add(amount));
+            order.setAmount(order.getAmount().add(amount));
+            repository.save(order);
+            OrderItem orderItemSave = orderItemRepository.save(orderItem);
+            return new ItemResponse(
+                    true,
+                    "Inserção feita com sucesso",
+                    orderItemSave.getId()
+            );
+        }
+    }
+
+    public ItemResponse subItem(ItemRequest request, String orderId){
+        Order order = repository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
+
+
+        if (order.getStatus() != StatusOrder.OPEN){
+            throw new StatusOrderException("O pedido não não está aberto");
+        }
+
+        Product product = productRepository.findById(request.productId())
+                .orElseThrow(() -> new ProductNotFoundException("Product não encontrado, id inválido"));
+
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderIdAndProductId(order.getId(), product.getId());
+
+        if (orderItemList.isEmpty()){
+            throw new StatusOrderException("Não existe esse produto nessa ordem");
+        }
+
+        BigDecimal amount = product.getValue().multiply(BigDecimal.valueOf(request.quantity()));
+        product.setStock(product.getStock()+request.quantity());
+        OrderItem orderItem = orderItemList.getFirst();
+        orderItem.setQuantity(orderItem.getQuantity()-request.quantity());
+        orderItem.setAmount(orderItem.getAmount().subtract(amount));
+        order.setAmount(order.getAmount().subtract(amount));
         repository.save(order);
-
+        OrderItem orderItemSave = orderItemRepository.save(orderItem);
         return new ItemResponse(
                 true,
-                "Inserção feita com sucesso",
+                "Subtração feita com sucesso",
                 orderItemSave.getId()
         );
+
     }
 }

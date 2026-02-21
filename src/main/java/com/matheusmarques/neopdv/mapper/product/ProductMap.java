@@ -25,5 +25,33 @@ public class ProductMap {
         );
     }
 
+    public static Product update(Product product, ProductRequest request) {
+        product.setName(
+                request.name() != null && !request.name().isEmpty()
+                        ? request.name()
+                        : product.getName()
+        );
+
+        product.setValue(
+                request.value() != null
+                        ? request.value()
+                        : product.getValue()
+        );
+
+        product.setStock(
+                request.stock() != null
+                        ? request.stock()
+                        : product.getStock()
+        );
+
+        product.setCodebar(
+                request.codebar() != null && !request.codebar().isEmpty()
+                        ? request.codebar()
+                        : product.getCodebar()
+        );
+
+        return product;
+    }
+
 
 }

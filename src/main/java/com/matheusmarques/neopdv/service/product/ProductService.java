@@ -17,7 +17,7 @@ public interface ProductService {
 
     ProductResponse insertImage(MultipartFile file, String idProduct);
 
-    List<Product> getAll();
+    List<Product> getAllActive();
 
     ProductResponse updateProduct(String productId, ProductRequest request);
 

@@ -32,12 +32,12 @@ public class ProductServiceImpl implements ProductService {
         this.repository = repository;
     }
 
-    public List<Product> getAll(){
-        return repository.findAll();
+    public List<Product> getAllActive(){
+        return repository.findByActive(true);
     }
 
     public List<Product> getCategory(String category){
-        return repository.findByCategory(category);
+        return repository.findByCategoryAndActive(category, true);
     }
 
     public Product getProduct(String id){
@@ -83,12 +83,10 @@ public class ProductServiceImpl implements ProductService {
         Product oldProduct = repository.findById(productId)
                 .orElseThrow()
                 ;
-        Product newProduct = ProductMap.map(request);
+        Product newProduct = ProductMap.update(oldProduct, request);
         newProduct.setId(oldProduct.getId());
 
-        Product updateProduct = repository.save(newProduct);
-
-        return ProductMap.toResponse(updateProduct, "Produto Atualizado com Sucesso");
+        return ProductMap.toResponse(repository.save(newProduct), "Produto Atualizado com Sucesso");
     }
 
     @Override
@@ -134,5 +132,12 @@ public class ProductServiceImpl implements ProductService {
         repository.save(product);
 
         return ProductMap.toResponse(product, "Nome atualizado");
+    }
+
+    public ProductResponse deleteProduct(String productId){
+        Product productDelete = repository.findById(productId).orElseThrow();
+        productDelete.setActive(false);
+        repository.save(productDelete);
+        return ProductMap.toResponse(productDelete, "Produto Deletado");
     }
 }

@@ -1,25 +1,4 @@
-|| Tela de Inicio ||
+|| Tela de POS ||
 
--- Concluido --
-======================
-Valor Vendido no Dia:
-- Aqui eu devo retornar todo o valor vendido no dia
-======================
-
--- Concluido --
-======================
-Quantidade de Vendas:
-- Aqui eu devo retornar a soma de todas as orders do dia
-======================
-
--- Aberto --
-======================
-Produto com Mais vendas:
-- Aqui deve retornar o produto mais vendido no dia
-======================
-
--- Concluido --
-======================
-Vendas abertas:
-- Deve retornar a soma de todas as ordens abertas
-======================
+Colocar um filtro de se caso adicionar um novo item ele deve verificar se já tem algum pedido com o mesmo produto se tiver ele adiciona se não ele cria um novo item
+E um endpoint para reduzir algum item, pegando o item id

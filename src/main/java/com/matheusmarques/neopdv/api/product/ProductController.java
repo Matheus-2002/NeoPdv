@@ -35,7 +35,7 @@ public class ProductController {
     public ResponseEntity<List<Product>> getAll(){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getAll());
+                .body(service.getAllActive());
     }
 
     @GetMapping("/{productId}")
@@ -107,5 +107,12 @@ public class ProductController {
                 .status(HttpStatus.OK)
                 .body(service.updateName(productId, name))
                 ;
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<ProductResponse> deleteProduct(@PathVariable String productId){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.deleteProduct(productId));
     }
 }
