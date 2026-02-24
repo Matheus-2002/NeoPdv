@@ -1,6 +1,6 @@
 package com.matheusmarques.neopdv.mapper.order;
 
-import com.matheusmarques.neopdv.api.order.response.OrderCardResponse;
+import com.matheusmarques.neopdv.api.order.response.OrderSummaryResponse;
 import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.domain.order.OrderItem;
 import com.matheusmarques.neopdv.domain.enums.StatusOrder;
@@ -54,12 +54,13 @@ public class OrderMap {
         );
     }
 
-    public static List<OrderCardResponse> toOrderCardResponse(List<Order> orders){
-        List<OrderCardResponse> responseList = new ArrayList<>();
+    public static List<OrderSummaryResponse> toOrderSummaryResponse(List<Order> orders){
+        List<OrderSummaryResponse> responseList = new ArrayList<>();
         for (Order order: orders){
-            OrderCardResponse response = new OrderCardResponse(
+            OrderSummaryResponse response = new OrderSummaryResponse(
                     order.getId(),
                     order.getTicket(),
+                    order.getStatus(),
                     order.getCreatedAt(),
                     order.getAmount(),
                     order.getItemsId().size()
@@ -67,5 +68,16 @@ public class OrderMap {
             responseList.add(response);
         }
         return responseList;
+    }
+
+    public static OrderSummaryResponse toOrderSummaryResponse(Order order){
+        return new OrderSummaryResponse(
+                order.getId(),
+                order.getTicket(),
+                order.getStatus(),
+                order.getCreatedAt(),
+                order.getAmount(),
+                order.getItemsId().size()
+        );
     }
 }

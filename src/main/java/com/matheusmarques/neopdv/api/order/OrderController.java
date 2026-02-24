@@ -5,6 +5,7 @@ import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.*;
 import com.matheusmarques.neopdv.domain.order.Order;
+import com.matheusmarques.neopdv.service.order.OrderService;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,17 +18,24 @@ import java.util.List;
 @RequestMapping("/order")
 public class OrderController {
 
-    private OrderServiceImpl service;
+    private OrderService service;
 
     public OrderController(OrderServiceImpl service){
         this.service = service;
     }
 
     @GetMapping("/all-cards")
-    public ResponseEntity<List<OrderCardResponse>> getCardOrders(){
+    public ResponseEntity<List<OrderSummaryResponse>> getCardOrders(){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getAllOpen());
+                .body(service.getAllOpenOderSummary());
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderSummaryResponse>> getAllOrderSummary(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getAllOrderSummary());
     }
 
     @PostMapping("/start")
@@ -52,7 +60,7 @@ public class OrderController {
     }
 
     @GetMapping("/close/{orderId}")
-    public ResponseEntity<Order> closedOrder(@PathVariable String orderId){
+    public ResponseEntity<OrderSummaryResponse> closedOrder(@PathVariable String orderId){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.closedOrder(orderId));
@@ -74,10 +82,10 @@ public class OrderController {
     }
 
     @GetMapping("/all-open")
-    public ResponseEntity<List<OrderCardResponse>> getAllOpen(){
+    public ResponseEntity<List<OrderSummaryResponse>> getAllOpenSummary(){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getAllOpen());
+                .body(service.getAllOpenOderSummary());
     }
 
     @GetMapping("/amount-today")

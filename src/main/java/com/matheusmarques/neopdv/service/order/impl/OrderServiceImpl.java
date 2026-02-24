@@ -36,6 +36,12 @@ public class OrderServiceImpl implements OrderService {
         this.orderItemRepository = orderItemRepository;
     }
 
+    public List<OrderSummaryResponse> getAllOrderSummary(){
+        List<Order> orders = repository.findAll();
+
+        return OrderMap.toOrderSummaryResponse(orders);
+    }
+
     @Override
     public QuantityOrdersOpenResponse getQuantityOpenOders(){
 
@@ -72,7 +78,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = repository.findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED);
         if(orders.isEmpty()){return new AmountTodayResponse(amountToday);}
 
-
         for (Order order : orders) {
             amountToday = amountToday.add(order.getAmount());
         }
@@ -80,10 +85,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderCardResponse> getAllOpen(){
+    public List<OrderSummaryResponse> getAllOpenOderSummary(){
         List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
 
-        return OrderMap.toOrderCardResponse(orders);
+        return OrderMap.toOrderSummaryResponse(orders);
     }
 
     @Override
@@ -174,7 +179,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    public Order closedOrder(String orderId){
+    public OrderSummaryResponse closedOrder(String orderId){
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
 
@@ -182,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
 
         repository.save(order);
 
-        return order;
+        return OrderMap.toOrderSummaryResponse(order);
     }
 
     public ItemResponse subItem(ItemRequest request, String orderId){

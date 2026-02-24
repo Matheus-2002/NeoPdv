@@ -4,6 +4,7 @@ import com.matheusmarques.neopdv.api.order.response.*;
 import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
+import com.matheusmarques.neopdv.domain.order.Order;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface OrderService {
 
     AmountTodayResponse getAmountToday();
 
-    List<OrderCardResponse> getAllOpen();
+    List<OrderSummaryResponse> getAllOpenOderSummary();
 
     OrderStartResponse orderStart(OrderStartRequest request);
 
@@ -24,5 +25,11 @@ public interface OrderService {
     SalesTodayResponse getSalesToday();
 
     QuantityOrdersOpenResponse getQuantityOpenOders();
+
+    List<OrderSummaryResponse> getAllOrderSummary();
+
+    OrderSummaryResponse closedOrder(String orderId);
+
+    ItemResponse subItem(ItemRequest request, String orderId);
 
 }

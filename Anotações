@@ -1,4 +1,29 @@
-|| Tela de POS ||
+|| Debitos Técnicos ||
 
-Colocar um filtro de se caso adicionar um novo item ele deve verificar se já tem algum pedido com o mesmo produto se tiver ele adiciona se não ele cria um novo item
-E um endpoint para reduzir algum item, pegando o item id
+--> Arrumar e padronizar response e Arquitetura do backend
+--> Arrumar e padronizar Arquitetura do backend
+--> Resetar Banco de dados
+
+
+|| Tela Inicial ||
+
+--> Configurar um endpoint do top Produtos da semana
+--> Configurar imagem dos produtos
+--> Adicionar Nome aos Cards
+
+|| Tela de Estoque ||
+
+--> Adicionar aba para colocar imagem e salvar no backend
+--> Sem categoria vai ser tudo
+--> Configurar logica de estoque do carro
+
+|| Tela de Orders ||
+
+--> Colocar filtro de data e colocar organização por nome ou data
+
+
+
+Debito Tecnico Backend:
+-> Organizar o service e service impl
+-> Organizar responses
+-> Listar endpoints usados e verificar o fluxo deles
