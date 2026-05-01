@@ -5,31 +5,26 @@ import com.matheusmarques.neopdv.api.product.response.ProductResponse;
 import com.matheusmarques.neopdv.domain.product.Product;
 import com.matheusmarques.neopdv.exception.custom.ProductNotFoundException;
 import com.matheusmarques.neopdv.exception.custom.ValidateCodebarException;
-import com.matheusmarques.neopdv.exception.custom.ValidateImageException;
 import com.matheusmarques.neopdv.exception.custom.ValidateProduct;
 import com.matheusmarques.neopdv.mapper.product.ProductMap;
 import com.matheusmarques.neopdv.repository.ProductRepository;
+import com.matheusmarques.neopdv.service.image.ImageStorageService;
 import com.matheusmarques.neopdv.service.product.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final String PATH = "C:\\PROJECTS\\front\\claudePdv\\resource\\produtos\\";
-
     private final ProductRepository repository;
+    private final ImageStorageService imageStorageService;
 
-    public ProductServiceImpl(ProductRepository repository){
+    public ProductServiceImpl(ProductRepository repository, ImageStorageService imageStorageService){
         this.repository = repository;
+        this.imageStorageService = imageStorageService;
     }
 
     public List<Product> getAllActive(){
@@ -41,48 +36,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Product getProduct(String id){
-        return repository.findById(id).orElseThrow();
-    }
-
-    @Override
-    public ProductResponse insertImage(MultipartFile file, String idProduct){
-        if (file.isEmpty()){
-            throw new ValidateImageException("Imagem inválida");
-        }
-
-        Product product = repository.findById(idProduct).orElseThrow(
-                () -> new ProductNotFoundException("Produto não encontrado. ID: " + idProduct)
-        );
-
-        String extensao = Objects.requireNonNull(file.getOriginalFilename())
-                .substring(file.getOriginalFilename().lastIndexOf("."));
-
-        Path caminho = Paths.get(PATH + product.getName()+extensao);
-
-        try{
-            Files.write(caminho, file.getBytes());
-
-        }catch (IOException e){
-            throw new RuntimeException("Não conseguimos salvar a imagem na pasta");
-        }
-
-        product.setPathImage(PATH + product.getName()+extensao);
-
-        repository.save(product);
-
-        return new ProductResponse(
-                true,
-                "Imagem salva com sucesso",
-                product
-        );
-
+        return repository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
     }
 
     @Override
     public ProductResponse updateProduct(String productId, ProductRequest request){
         Product oldProduct = repository.findById(productId)
-                .orElseThrow()
-                ;
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
         Product newProduct = ProductMap.update(oldProduct, request);
         newProduct.setId(oldProduct.getId());
 
@@ -134,8 +95,21 @@ public class ProductServiceImpl implements ProductService {
         return ProductMap.toResponse(product, "Nome atualizado");
     }
 
+    @Override
+    public ProductResponse updateImage(String productId, MultipartFile file) {
+        Product product = repository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado. ID: " + productId));
+
+        String filename = imageStorageService.store(productId, file);
+        product.setPathImage(filename);
+        repository.save(product);
+
+        return ProductMap.toResponse(product, "Imagem atualizada");
+    }
+
     public ProductResponse deleteProduct(String productId){
-        Product productDelete = repository.findById(productId).orElseThrow();
+        Product productDelete = repository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
         productDelete.setActive(false);
         repository.save(productDelete);
         return ProductMap.toResponse(productDelete, "Produto Deletado");

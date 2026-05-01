@@ -52,6 +52,12 @@ public class ProductMap {
                         : product.getCodebar()
         );
 
+        product.setCategory(
+                request.category() != null && !request.category().isEmpty()
+                        ? request.category()
+                        : product.getCategory()
+        );
+
         return product;
     }
 

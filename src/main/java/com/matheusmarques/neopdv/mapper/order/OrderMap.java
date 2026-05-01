@@ -16,7 +16,7 @@ import java.util.List;
 
 public class OrderMap {
 
-    private static String START_ORDER_SUCESS = "A ordem foi iniciada com sucesso, já podem ser lançandos produtos a ela";
+    private static final String START_ORDER_SUCCESS = "A ordem foi iniciada com sucesso, já podem ser lançados produtos a ela";
 
     public static Order map(OrderStartRequest request){
         Order order = new Order();
@@ -33,7 +33,7 @@ public class OrderMap {
     public static OrderStartResponse toOrderStartResponse(Order order){
         return new OrderStartResponse(
                 true,
-                START_ORDER_SUCESS,
+                START_ORDER_SUCCESS,
                 order.getId(),
                 StatusTicket.FREE,
                 order.getCreatedAt()
@@ -63,7 +63,8 @@ public class OrderMap {
                     order.getStatus(),
                     order.getCreatedAt(),
                     order.getAmount(),
-                    order.getItemsId().size()
+                    order.getItemsId().size(),
+                    order.getCustomer()
             );
             responseList.add(response);
         }
@@ -77,7 +78,8 @@ public class OrderMap {
                 order.getStatus(),
                 order.getCreatedAt(),
                 order.getAmount(),
-                order.getItemsId().size()
+                order.getItemsId().size(),
+                order.getCustomer()
         );
     }
 }

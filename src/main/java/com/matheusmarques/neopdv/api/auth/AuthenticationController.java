@@ -10,7 +10,6 @@ import com.matheusmarques.neopdv.domain.user.User;
 import com.matheusmarques.neopdv.repository.UserRepository;
 import com.matheusmarques.neopdv.service.token.TokenService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,45 +24,47 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-
     private final UserRepository repository;
+    private final TokenService tokenService;
 
-    @Autowired
-    private TokenService tokenService;
-
-    AuthenticationController(AuthenticationManager manager, UserRepository repository){
+    AuthenticationController(AuthenticationManager manager, UserRepository repository, TokenService tokenService){
         this.authenticationManager = manager;
         this.repository = repository;
+        this.tokenService = tokenService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO request){
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO request){
         var usernamePassword = new UsernamePasswordAuthenticationToken(request.login(), request.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var accessToken = tokenService.generateAccessToken((User)auth.getPrincipal());
         var refreshToken = tokenService.generateRefreshToken((User)auth.getPrincipal());
 
-        return ResponseEntity
-                .ok(new LoginResponseDTO(accessToken, refreshToken));
+        return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest request){
-        String email = tokenService.validateToken(request.refreshToken());
+    public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
+        String email = tokenService.validateRefreshToken(request.refreshToken());
+
         if (email.isEmpty()) {
             throw new RuntimeException("Refresh token inválido ou expirado");
         }
-        User user = new User();
-        user.setEmail(email);
-        return ResponseEntity
-                .ok(new RefreshTokenResponse(
-                tokenService.generateAccessToken(user)
-        ));
+
+        User user = (User) repository.findByEmail(email);
+
+        if (user == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+
+        String newAccessToken = tokenService.generateAccessToken(user);
+
+        return ResponseEntity.ok(new RefreshTokenResponse(newAccessToken));
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO request){
+    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO request){
         if (this.repository.findByEmail(request.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
@@ -74,9 +75,6 @@ public class AuthenticationController {
 
         this.repository.save(newUser);
 
-        return ResponseEntity
-                .ok()
-                .build();
-
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,10 +1,10 @@
 package com.matheusmarques.neopdv.api.order;
 
+import com.matheusmarques.neopdv.api.order.request.CloseOrderRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
 import com.matheusmarques.neopdv.api.order.response.*;
-import com.matheusmarques.neopdv.domain.order.Order;
 import com.matheusmarques.neopdv.service.order.OrderService;
 import com.matheusmarques.neopdv.service.order.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
@@ -55,15 +55,16 @@ public class OrderController {
     @PostMapping("/sub-item/{orderId}")
     public ResponseEntity<ItemResponse> subItem(@PathVariable String orderId, @RequestBody ItemRequest request){
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(service.subItem(request, orderId));
     }
 
-    @GetMapping("/close/{orderId}")
-    public ResponseEntity<OrderSummaryResponse> closedOrder(@PathVariable String orderId){
+    @PatchMapping("/close/{orderId}")
+    public ResponseEntity<OrderSummaryResponse> closedOrder(@PathVariable String orderId,
+                                                            @RequestBody @Valid CloseOrderRequest request){
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(service.closedOrder(orderId));
+                .status(HttpStatus.OK)
+                .body(service.closedOrder(orderId, request));
     }
 
 
@@ -107,5 +108,12 @@ public class OrderController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getQuantityOpenOders());
+    }
+
+    @GetMapping("/top-product-month")
+    public ResponseEntity<TopProductMonthResponse> getTopProductMonth(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getTopProductMonth());
     }
 }

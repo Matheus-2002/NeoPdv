@@ -16,7 +16,7 @@ import java.time.ZoneOffset;
 public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
-    private static final long ACCESS_EXPIRATION_MINUTES = 2;
+    private static final long ACCESS_EXPIRATION_MINUTES = 120;
     private static final long REFRESH_EXPIRATION_DAYS = 7;
 
 
@@ -26,6 +26,8 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
+                    .withClaim("role", user.getRole().name())
+                    .withClaim("type", "access")
                     .withExpiresAt(genExpirationDateMinutes(ACCESS_EXPIRATION_MINUTES))
                     .sign(algorithm);
 
@@ -41,6 +43,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
+                    .withClaim("type", "refresh")
                     .withExpiresAt(genExpirationDateDays(REFRESH_EXPIRATION_DAYS))
                     .sign(algorithm);
 
@@ -55,6 +58,21 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
                     .withIssuer("auth-api")
+                    .withClaim("type", "access")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+        }catch (JWTVerificationException ex){
+            return "";
+        }
+    }
+
+    public String validateRefreshToken(String token){
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .withClaim("type", "refresh")
                     .build()
                     .verify(token)
                     .getSubject();

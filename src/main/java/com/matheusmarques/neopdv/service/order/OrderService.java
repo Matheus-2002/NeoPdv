@@ -1,6 +1,7 @@
 package com.matheusmarques.neopdv.service.order;
 
 import com.matheusmarques.neopdv.api.order.response.*;
+import com.matheusmarques.neopdv.api.order.request.CloseOrderRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
@@ -28,7 +29,9 @@ public interface OrderService {
 
     List<OrderSummaryResponse> getAllOrderSummary();
 
-    OrderSummaryResponse closedOrder(String orderId);
+    OrderSummaryResponse closedOrder(String orderId, CloseOrderRequest request);
+
+    TopProductMonthResponse getTopProductMonth();
 
     ItemResponse subItem(ItemRequest request, String orderId);
 

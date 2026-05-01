@@ -3,19 +3,12 @@ package com.matheusmarques.neopdv.service.product;
 import com.matheusmarques.neopdv.domain.product.Product;
 import com.matheusmarques.neopdv.api.product.request.ProductRequest;
 import com.matheusmarques.neopdv.api.product.response.ProductResponse;
-import com.matheusmarques.neopdv.exception.custom.ValidateCodebarException;
-import com.matheusmarques.neopdv.exception.custom.ValidateProduct;
-import com.matheusmarques.neopdv.mapper.product.ProductMap;
-import com.matheusmarques.neopdv.repository.ProductRepository;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
-
-    ProductResponse insertImage(MultipartFile file, String idProduct);
 
     List<Product> getAllActive();
 
@@ -28,4 +21,6 @@ public interface ProductService {
     ProductResponse updateStock(String productId, int stock);
 
     ProductResponse updateName(String productId, String name);
+
+    ProductResponse updateImage(String productId, MultipartFile file);
 }

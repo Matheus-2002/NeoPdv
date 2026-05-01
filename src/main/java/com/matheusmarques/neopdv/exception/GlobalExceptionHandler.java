@@ -106,4 +106,48 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ExceptionResponse> handleInsufficientStock(InsufficientStockException ex){
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(new ExceptionResponse(
+                        false,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
+    @ExceptionHandler(InvalidQuantityException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidQuantity(InvalidQuantityException ex){
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(new ExceptionResponse(
+                        false,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
+    @ExceptionHandler(OrderAlreadyClosedException.class)
+    public ResponseEntity<ExceptionResponse> handleOrderAlreadyClosed(OrderAlreadyClosedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ExceptionResponse(
+                        false,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                        ));
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ExceptionResponse(
+                        false,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
 }

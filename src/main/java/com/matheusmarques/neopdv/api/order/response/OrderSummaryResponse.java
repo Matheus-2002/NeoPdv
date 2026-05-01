@@ -11,6 +11,7 @@ public record OrderSummaryResponse(
         StatusOrder status,
         LocalDateTime createdDate,
         BigDecimal amount,
-        int itens
+        int itens,
+        String customer
 ) {
 }

@@ -1,5 +1,6 @@
 package com.matheusmarques.neopdv.service.order.impl;
 
+import com.matheusmarques.neopdv.api.order.request.CloseOrderRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemDeleteRequest;
 import com.matheusmarques.neopdv.api.order.request.ItemRequest;
 import com.matheusmarques.neopdv.api.order.request.OrderStartRequest;
@@ -15,13 +16,18 @@ import com.matheusmarques.neopdv.repository.OrderItemRepository;
 import com.matheusmarques.neopdv.repository.OrderRepository;
 import com.matheusmarques.neopdv.repository.ProductRepository;
 import com.matheusmarques.neopdv.service.order.OrderService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -37,190 +43,215 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public List<OrderSummaryResponse> getAllOrderSummary(){
-        List<Order> orders = repository.findAll();
-
-        return OrderMap.toOrderSummaryResponse(orders);
+        return OrderMap.toOrderSummaryResponse(repository.findAll());
     }
 
-    @Override
     public QuantityOrdersOpenResponse getQuantityOpenOders(){
-
-        List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
-
-        if(orders.isEmpty()){return new QuantityOrdersOpenResponse(0);}
-
-        return new QuantityOrdersOpenResponse(orders.size());
+        return new QuantityOrdersOpenResponse(repository.findByStatus(StatusOrder.OPEN).size());
     }
 
-    @Override
     public SalesTodayResponse getSalesToday(){
-
         LocalDate today = LocalDate.now();
         LocalDateTime start = today.atStartOfDay();
         LocalDateTime end = today.atTime(LocalTime.MAX);
 
-        List<Order> orders = repository.findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED);
-
-        if(orders.isEmpty()){return new SalesTodayResponse(0);}
-
-        return new SalesTodayResponse(orders.size());
+        return new SalesTodayResponse(
+                repository.findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED).size()
+        );
     }
 
-    @Override
     public AmountTodayResponse getAmountToday(){
-
-        BigDecimal amountToday = BigDecimal.ZERO;
-
         LocalDate today = LocalDate.now();
         LocalDateTime start = today.atStartOfDay();
         LocalDateTime end = today.atTime(LocalTime.MAX);
 
-        List<Order> orders = repository.findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED);
-        if(orders.isEmpty()){return new AmountTodayResponse(amountToday);}
+        BigDecimal total = repository
+                .findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED)
+                .stream()
+                .map(Order::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        for (Order order : orders) {
-            amountToday = amountToday.add(order.getAmount());
-        }
-        return new AmountTodayResponse(amountToday);
+        return new AmountTodayResponse(total);
     }
 
-    @Override
     public List<OrderSummaryResponse> getAllOpenOderSummary(){
-        List<Order> orders = repository.findByStatus(StatusOrder.OPEN);
-
-        return OrderMap.toOrderSummaryResponse(orders);
+        return OrderMap.toOrderSummaryResponse(repository.findByStatus(StatusOrder.OPEN));
     }
 
-    @Override
+    @Transactional
     public OrderStartResponse orderStart(OrderStartRequest request){
-        Order orderRequest = OrderMap.map(request);
-        if (repository.findByTicketAndStatus(orderRequest.getTicket(), StatusOrder.OPEN).isPresent()){
-            throw new ValidationTableException();
-        }
-        Order orderSave = repository.save(orderRequest);
-        return OrderMap.toOrderStartResponse(orderSave);
+        Order order = OrderMap.map(request);
+
+        repository.findByTicketAndStatus(order.getTicket(), StatusOrder.OPEN)
+                .ifPresent(o -> { throw new ValidationTableException(); });
+
+        return OrderMap.toOrderStartResponse(repository.save(order));
     }
 
-    @Override
     public OrderResponse getOrderById(String orderId){
-        Order order = repository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
-
-        List<OrderItem> itemList = orderItemRepository.findAllById(order.getItemsId());
-
-
-        return OrderMap.toOrderResponse(order, itemList);
+        Order order = findOrder(orderId);
+        List<OrderItem> items = orderItemRepository.findAllById(order.getItemsId());
+        return OrderMap.toOrderResponse(order, items);
     }
 
-    @Override
+    @Transactional
     public OrderResponse removeItem(String orderId, ItemDeleteRequest request){
-        String itemId = request.itemId();
-        Order order = repository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
+        Order order = findOrder(orderId);
 
-        boolean itemRemoved = order.getItemsId().remove(itemId);
-
-        if (!itemRemoved) {
-            throw new ItemNotFoundException("ID do item não encontrado na lista: " + itemId);
+        if (!order.getItemsId().remove(request.itemId())){
+            throw new ItemNotFoundException("Item não encontrado");
         }
 
-        OrderItem itemDelete = orderItemRepository.findById(itemId).orElseThrow();
-        order.setAmount(order.getAmount().subtract(itemDelete.getAmount()));
-        orderItemRepository.deleteById(itemId);
+        OrderItem item = orderItemRepository.findById(request.itemId())
+                .orElseThrow(() -> new ItemNotFoundException("Item não encontrado"));
+
+        Product product = findProduct(item.getProductId());
+
+        product.setStock(product.getStock() + item.getQuantity());
+        order.setAmount(order.getAmount().subtract(item.getAmount()));
+
+        productRepository.save(product);
+        orderItemRepository.delete(item);
 
         return OrderMap.toOrderResponse(repository.save(order), orderItemRepository.findAllById(order.getItemsId()));
     }
 
-    //Arrumar logica maior que 0 para colcoar produto
-    @Override
+    @Transactional
     public ItemResponse addItem(ItemRequest request, String orderId){
-        Order order = repository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
+        Order order = validateOpenOrder(orderId);
+        Product product = findProduct(request.productId());
 
-
-        if (order.getStatus() != StatusOrder.OPEN){
-            throw new StatusOrderException("O pedido não não está aberto");
+        if (product.getStock() < request.quantity()){
+            throw new InsufficientStockException("Item sem estoque");
         }
 
-        Product product = productRepository.findById(request.productId())
-                .orElseThrow(() -> new ProductNotFoundException("Product não encontrado, id inválido"));
+        List<OrderItem> items = orderItemRepository.findByOrderIdAndProductId(order.getId(), product.getId());
 
-        List<OrderItem> orderItemList = orderItemRepository.findByOrderIdAndProductId(order.getId(), product.getId());
+        if (items.isEmpty()){
+            OrderItem item = orderItemRepository.save(OrderItemBuilder.build(order, product, request));
 
-        if (orderItemList.isEmpty()){
-            OrderItem orderItem = OrderItemBuilder.build(order, product, request);
-            OrderItem orderItemSave = orderItemRepository.save(orderItem);
+            product.setStock(product.getStock() - item.getQuantity());
+            order.setAmount(order.getAmount().add(item.getAmount()));
+            order.getItemsId().add(item.getId());
 
-            product.setStock(product.getStock()-orderItemSave.getQuantity());
-
-            order.setAmount(order.getAmount().add(orderItemSave.getAmount()));
-            order.getItemsId().add(orderItemSave.getId());
+            productRepository.save(product);
             repository.save(order);
 
-            return new ItemResponse(
-                    true,
-                    "Inserção feita com sucesso",
-                    orderItemSave.getId()
-            );
-        }else{
-            BigDecimal amount = product.getValue().multiply(BigDecimal.valueOf(request.quantity()));
-            product.setStock(product.getStock()-request.quantity());
-            OrderItem orderItem = orderItemList.getFirst();
-            orderItem.setQuantity(orderItem.getQuantity()+request.quantity());
-            orderItem.setAmount(orderItem.getAmount().add(amount));
-            order.setAmount(order.getAmount().add(amount));
-            repository.save(order);
-            OrderItem orderItemSave = orderItemRepository.save(orderItem);
-            return new ItemResponse(
-                    true,
-                    "Inserção feita com sucesso",
-                    orderItemSave.getId()
-            );
+            return new ItemResponse(true, "OK", item.getId());
         }
-    }
 
-    public OrderSummaryResponse closedOrder(String orderId){
-        Order order = repository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
+        OrderItem item = items.getFirst();
+        BigDecimal amount = product.getValue().multiply(BigDecimal.valueOf(request.quantity()));
 
-        order.setStatus(StatusOrder.CLOSED);
+        item.setQuantity(item.getQuantity() + request.quantity());
+        item.setAmount(item.getAmount().add(amount));
 
+        product.setStock(product.getStock() - request.quantity());
+        order.setAmount(order.getAmount().add(amount));
+
+        orderItemRepository.save(item);
+        productRepository.save(product);
         repository.save(order);
 
-        return OrderMap.toOrderSummaryResponse(order);
+        return new ItemResponse(true, "OK", item.getId());
     }
 
-    public ItemResponse subItem(ItemRequest request, String orderId){
-        Order order = repository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada, id inválido"));
+    @Transactional
+    public OrderSummaryResponse closedOrder(String orderId, CloseOrderRequest request){
+        Order order = findOrder(orderId);
 
-
-        if (order.getStatus() != StatusOrder.OPEN){
-            throw new StatusOrderException("O pedido não não está aberto");
+        if (order.getStatus() == StatusOrder.CLOSED){
+            throw new OrderAlreadyClosedException("Pedido já foi fechado");
         }
 
-        Product product = productRepository.findById(request.productId())
-                .orElseThrow(() -> new ProductNotFoundException("Product não encontrado, id inválido"));
+        order.setPaymentMethod(request.paymentMethod());
+        order.setStatus(StatusOrder.CLOSED);
+        return OrderMap.toOrderSummaryResponse(repository.save(order));
+    }
 
-        List<OrderItem> orderItemList = orderItemRepository.findByOrderIdAndProductId(order.getId(), product.getId());
+    @Transactional
+    public ItemResponse subItem(ItemRequest request, String orderId){
+        Order order = validateOpenOrder(orderId);
+        Product product = findProduct(request.productId());
 
-        if (orderItemList.isEmpty()){
-            throw new StatusOrderException("Não existe esse produto nessa ordem");
+        OrderItem item = orderItemRepository
+                .findByOrderIdAndProductId(order.getId(), product.getId())
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new ItemNotFoundException("Item não encontrado"));
+
+        int newQuantity = item.getQuantity() - request.quantity();
+
+        if (newQuantity < 0){
+            throw new InvalidQuantityException("Subtração invalida");
         }
 
         BigDecimal amount = product.getValue().multiply(BigDecimal.valueOf(request.quantity()));
-        product.setStock(product.getStock()+request.quantity());
-        OrderItem orderItem = orderItemList.getFirst();
-        orderItem.setQuantity(orderItem.getQuantity()-request.quantity());
-        orderItem.setAmount(orderItem.getAmount().subtract(amount));
-        order.setAmount(order.getAmount().subtract(amount));
-        repository.save(order);
-        OrderItem orderItemSave = orderItemRepository.save(orderItem);
-        return new ItemResponse(
-                true,
-                "Subtração feita com sucesso",
-                orderItemSave.getId()
-        );
 
+        product.setStock(product.getStock() + request.quantity());
+
+        if (newQuantity == 0){
+            order.setAmount(order.getAmount().subtract(item.getAmount()));
+            order.getItemsId().remove(item.getId());
+            orderItemRepository.delete(item);
+        } else {
+            item.setQuantity(newQuantity);
+            item.setAmount(item.getAmount().subtract(amount));
+            order.setAmount(order.getAmount().subtract(amount));
+            orderItemRepository.save(item);
+        }
+
+        productRepository.save(product);
+        repository.save(order);
+
+        return new ItemResponse(true, "OK", item.getId());
+    }
+
+    public TopProductMonthResponse getTopProductMonth(){
+        YearMonth currentMonth = YearMonth.now();
+        LocalDateTime start = currentMonth.atDay(1).atStartOfDay();
+        LocalDateTime end = currentMonth.atEndOfMonth().atTime(LocalTime.MAX);
+
+        List<String> allItemIds = repository
+                .findByCreatedAtBetweenAndStatus(start, end, StatusOrder.CLOSED)
+                .stream()
+                .flatMap(order -> order.getItemsId().stream())
+                .toList();
+
+        if (allItemIds.isEmpty()){
+            return new TopProductMonthResponse(null, null, 0);
+        }
+
+        return orderItemRepository.findAllById(allItemIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        item -> Map.entry(item.getProductId(), item.getProductName()),
+                        Collectors.summingInt(OrderItem::getQuantity)
+                ))
+                .entrySet()
+                .stream()
+                .max(Comparator.comparingInt(Map.Entry::getValue))
+                .map(e -> new TopProductMonthResponse(e.getKey().getValue(), e.getKey().getKey(), e.getValue()))
+                .orElse(new TopProductMonthResponse(null, null, 0));
+    }
+
+    private Order findOrder(String id){
+        return repository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order não encontrada"));
+    }
+
+    private Product findProduct(String id){
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
+    }
+
+    private Order validateOpenOrder(String id){
+        Order order = findOrder(id);
+
+        if (order.getStatus() != StatusOrder.OPEN){
+            throw new StatusOrderException("Pedido fechado");
+        }
+
+        return order;
     }
 }

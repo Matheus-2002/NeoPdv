@@ -4,10 +4,10 @@ import com.matheusmarques.neopdv.api.product.request.ProductRequest;
 import com.matheusmarques.neopdv.api.product.response.ProductResponse;
 import com.matheusmarques.neopdv.domain.product.Product;
 import com.matheusmarques.neopdv.service.product.impl.ProductServiceImpl;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,13 +22,6 @@ public class ProductController {
 
     public ProductController(ProductServiceImpl service){
         this.service = service;
-    }
-
-    @PostMapping("/insert-image/{idProduct}")
-    public ResponseEntity<ProductResponse> insertImage(@RequestParam("file") MultipartFile file, @PathVariable String idProduct) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(service.insertImage(file, idProduct));
     }
 
     @GetMapping("/all-active")
@@ -98,14 +91,23 @@ public class ProductController {
     }
 
     @PatchMapping("/update-name/{productId}")
-    public ResponseEntity<ProductResponse> updateStock(@PathVariable String productId,
-                                                       @RequestBody
-                                                       @NotBlank
-                                                       String name){
+    public ResponseEntity<ProductResponse> updateName(@PathVariable String productId,
+                                                      @RequestBody
+                                                      String name){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.updateName(productId, name))
+                ;
+    }
+
+    @PatchMapping(value = "/update-image/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> updateImage(@PathVariable String productId,
+                                                       @RequestParam("file") MultipartFile file){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.updateImage(productId, file))
                 ;
     }
 
